@@ -1,0 +1,246 @@
+---
+title: 'Components Overview'
+description: 'A comprehensive collection of reusable Flutter widgets with neobrutalism design'
+---
+
+## Introduction
+
+The portfolio includes a rich library of custom Flutter widgets designed with the neobrutalism aesthetic. All components are responsive, theme-aware, and built for reusability.
+
+## Component Categories
+
+<CardGroup cols={2}>
+  <Card title="Display Widgets" icon="cube" href="/components/widgets">
+    Project cards, profile images, and content display components
+  </Card>
+  <Card title="Neobrutalism Components" icon="palette" href="/components/neobrutalism">
+    Bold borders, shadows, and the signature neobrutalism style
+  </Card>
+  <Card title="Layout Components" icon="grid" href="/components/layout">
+    Containers, boxes, and structural elements
+  </Card>
+  <Card title="Interactive Elements" icon="hand-pointer">
+    Hover effects, animations, and user interactions
+  </Card>
+</CardGroup>
+
+## Key Features
+
+All components in this library share common characteristics:
+
+### Theme Support
+Every component adapts to light and dark modes automatically:
+- **Light Mode**: Colored backgrounds with black borders and shadows
+- **Dark Mode**: Black backgrounds with neon-colored borders and glowing effects
+
+### Responsive Design
+Components use `flutter_screenutil` for consistent sizing across devices:
+```dart
+fontSize: MediaQuery.of(context).size.width <= 900 ? 12.w : 4.w
+```
+
+### Consistent Typography
+All text uses the Outfit font family from Google Fonts:
+```dart
+fontFamily: GoogleFonts.outfit().fontFamily
+```
+
+### Neobrutalism Styling
+Signature design elements include:
+- Bold 2-3px borders
+- Offset shadows (typically 3-6px)
+- Rounded corners (12-20px radius)
+- High contrast color combinations
+
+## Core Components
+
+### Widget Library
+
+<AccordionGroup>
+  <Accordion title="ProjectCard">
+    Displays project information with image, description, tech stack, and call-to-action button.
+    
+    **Location**: `lib/widgets/projectcard.dart`
+  </Accordion>
+  
+  <Accordion title="NeoBrutalContainer">
+    A versatile container with neobrutalism styling, supporting custom colors and navigation.
+    
+    **Location**: `lib/widgets/neobrutalcontainer.dart`
+  </Accordion>
+  
+  <Accordion title="NeoBrutalBox">
+    Card-style container with header and body sections, featuring decorative circles.
+    
+    **Location**: `lib/widgets/neobrutalbox.dart`
+  </Accordion>
+  
+  <Accordion title="LanguageBox">
+    Pill-shaped tag for displaying technologies with color-coded themes.
+    
+    **Location**: `lib/widgets/languagebox.dart`
+  </Accordion>
+  
+  <Accordion title="AnimatedPillsBackground">
+    Animated background with breathing pill shapes for visual interest.
+    
+    **Location**: `lib/widgets/animated_pill_bg.dart`
+  </Accordion>
+  
+  <Accordion title="SocialBox & SocialLinkButton">
+    Social media link buttons with icons and platform-specific colors.
+    
+    **Location**: `lib/widgets/socialbox.dart`
+  </Accordion>
+  
+  <Accordion title="WorkTimeline">
+    Vertical timeline displaying work experience with company cards.
+    
+    **Location**: `lib/widgets/worktimeline.dart`
+  </Accordion>
+  
+  <Accordion title="SkillsBento">
+    Bento-style grid layout showcasing skills organized by category.
+    
+    **Location**: `lib/widgets/skillsbento.dart`
+  </Accordion>
+  
+  <Accordion title="ProfileImage">
+    Polaroid-style photo frame with rotation and theme-aware glow effects.
+    
+    **Location**: `lib/widgets/profileimage.dart`
+  </Accordion>
+  
+  <Accordion title="LinkCard">
+    Card displaying external links with images and hover effects.
+    
+    **Location**: `lib/widgets/linkcard.dart`
+  </Accordion>
+</AccordionGroup>
+
+## Utility Components
+
+### OnHover Builder
+
+The `OnHover` widget provides smooth hover animations:
+
+```dart
+OnHover(
+  builder: (bool isHovered) {
+    return YourWidget();
+  },
+)
+```
+
+**Location**: `lib/presentation/onhover.dart:1`
+
+**Features**:
+- Lifts element 10px on hover
+- 200ms animation duration
+- Smooth easing curve
+
+### BoxCircles
+
+Decorative circles used in headers:
+
+```dart
+BoxCircles(
+  hoverEnabled: true,
+  color: AppColors.lightPeach,
+)
+```
+
+**Location**: `lib/widgets/neobrutalbox.dart:112`
+
+## Style System
+
+### AppColors
+
+Centralized color palette with 40+ predefined colors:
+
+```dart
+AppColors.primaryPurple    // #90a8ed
+AppColors.lightTeal        // #DAF5F0
+AppColors.brightOrange     // #FFDB58
+AppColors.black            // #121212
+AppColors.white            // #F0F0F0
+```
+
+**Location**: `lib/consts/style.dart:129`
+
+### AppStyles
+
+Reusable style definitions:
+
+```dart
+AppStyles().socialIconStyle
+AppStyles().outfitTextStyle
+AppStyles().neoContainerDecorationOne()
+AppStyles().neoContainerDecorationTwo()
+```
+
+**Location**: `lib/consts/style.dart:13`
+
+### TooltipStyles
+
+Theme-aware tooltip styling:
+
+```dart
+TooltipStyles.decoration(isDark: true)
+TooltipStyles.textStyle(isDark: true)
+TooltipStyles.padding
+TooltipStyles.margin
+```
+
+**Location**: `lib/consts/style.dart:88`
+
+## Usage Example
+
+Here's how to combine multiple components:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/widgets/neobrutalbox.dart';
+import 'package:portfolio/widgets/projectcard.dart';
+import 'package:portfolio/consts/style.dart';
+
+class MyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: NeoBrutalBox(
+          headerText: 'My Projects',
+          headerColor: AppColors.lightPeach,
+          containerChild: ProjectCard(
+            projectName: 'Flutter Portfolio',
+            projectDescription: 'A modern portfolio with neobrutalism design',
+            imagePath: 'assets/images/project.png',
+            projectLink: 'https://github.com/username/repo',
+            languages: ['Flutter', 'Dart', 'Firebase'],
+            buttonText: 'View Project',
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Widget Documentation" icon="book" href="/components/widgets">
+    Detailed API reference for display widgets
+  </Card>
+  <Card title="Neobrutalism Guide" icon="paintbrush" href="/components/neobrutalism">
+    Learn the design system principles
+  </Card>
+  <Card title="Layout Components" icon="table-cells" href="/components/layout">
+    Master container and layout widgets
+  </Card>
+  <Card title="Customization" icon="sliders" href="/customization/colors">
+    Customize colors and styles
+  </Card>
+</CardGroup>

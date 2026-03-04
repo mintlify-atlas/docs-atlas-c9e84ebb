@@ -1,0 +1,816 @@
+---
+title: 'Layout Components'
+description: 'Container widgets and layout utilities for structuring content'
+---
+
+## Overview
+
+Layout components provide the structural foundation for the portfolio's interface. They handle positioning, spacing, and responsive behavior while maintaining the neobrutalism design aesthetic.
+
+## Container Components
+
+### NeoBrutalContainer
+
+A versatile container with neobrutalism styling, supporting custom colors, navigation, and theme adaptation.
+
+**Location**: `lib/widgets/neobrutalcontainer.dart:6`
+
+#### Properties
+
+<ParamField path="text" type="String" required>
+  Text content displayed in the container
+</ParamField>
+
+<ParamField path="width" type="double" required>
+  Container width
+</ParamField>
+
+<ParamField path="height" type="double" required>
+  Container height
+</ParamField>
+
+<ParamField path="fontsize" type="double" required>
+  Font size for the text
+</ParamField>
+
+<ParamField path="color" type="Color" required>
+  Base color for the container (inverts based on theme)
+</ParamField>
+
+<ParamField path="path" type="String?">
+  Optional navigation route (uses GetX routing)
+</ParamField>
+
+#### Usage
+
+```dart
+NeoBrutalContainer(
+  text: 'Click Me',
+  width: 200,
+  height: 100,
+  fontsize: 18,
+  color: AppColors.lightPeach,
+  path: '/about',  // Optional navigation
+)
+```
+
+#### Features
+
+- **Theme Inversion**: Background and accent colors swap between light/dark modes
+- **Navigation**: Tap to navigate to specified route using GetX
+- **Hover Effect**: Wraps content in `OnHover` for lift animation
+- **Centered Text**: Content is automatically centered
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    ```dart
+    bgColor = color;              // Colored background
+    accentColor = Colors.black;   // Black border, shadow, text
+    ```
+  </Tab>
+  <Tab title="Dark Mode">
+    ```dart
+    bgColor = Colors.black;       // Black background
+    accentColor = color;          // Colored border, shadow, text (neon)
+    ```
+  </Tab>
+</Tabs>
+
+#### Example Implementation
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/widgets/neobrutalcontainer.dart';
+import 'package:portfolio/consts/style.dart';
+
+class NavigationGrid extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        NeoBrutalContainer(
+          text: 'Projects',
+          width: 150,
+          height: 80,
+          fontsize: 16,
+          color: AppColors.lightBlue,
+          path: '/projects',
+        ),
+        NeoBrutalContainer(
+          text: 'About',
+          width: 150,
+          height: 80,
+          fontsize: 16,
+          color: AppColors.lightPeach,
+          path: '/about',
+        ),
+        NeoBrutalContainer(
+          text: 'Contact',
+          width: 150,
+          height: 80,
+          fontsize: 16,
+          color: AppColors.lightLavender,
+          path: '/contact',
+        ),
+      ],
+    );
+  }
+}
+```
+
+---
+
+### NeoBrutalBox
+
+A card-style container with a distinct header section and body area, featuring decorative circles and theme-aware styling.
+
+**Location**: `lib/widgets/neobrutalbox.dart:7`
+
+#### Properties
+
+<ParamField path="headerText" type="String" required>
+  Text displayed in the header section
+</ParamField>
+
+<ParamField path="headerColor" type="Color" required>
+  Color for the header background (light mode) or accent (dark mode)
+</ParamField>
+
+<ParamField path="containerChild" type="Widget" required>
+  Content widget displayed in the body section
+</ParamField>
+
+#### Usage
+
+```dart
+NeoBrutalBox(
+  headerText: 'About Me',
+  headerColor: AppColors.lightLavender,
+  containerChild: Column(
+    children: [
+      Text('Full Stack Developer'),
+      SizedBox(height: 8),
+      Text('Passionate about Flutter and Web Development'),
+    ],
+  ),
+)
+```
+
+#### Structure
+
+The component has a two-section layout:
+
+1. **Header Section**
+   - Colored background (light mode) or black (dark mode)
+   - Title text aligned left
+   - Three decorative `BoxCircles` aligned right
+   - Bottom border separating from body
+
+2. **Body Section**
+   - Transparent background
+   - 12px padding
+   - Custom content via `containerChild`
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - **Outer Container**: White background, black border and shadow
+    - **Header**: Colored background, black text
+    - **Circles**: White with 65% opacity, black border
+  </Tab>
+  <Tab title="Dark Mode">
+    - **Outer Container**: Black background, colored border and shadow
+    - **Header**: Black background, colored text
+    - **Circles**: Black with 25% opacity, colored border
+  </Tab>
+</Tabs>
+
+#### Complete Example
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/widgets/neobrutalbox.dart';
+import 'package:portfolio/consts/style.dart';
+
+class ProfileSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return NeoBrutalBox(
+      headerText: 'Profile',
+      headerColor: AppColors.lightSeafoamGreen,
+      containerChild: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'John Doe',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Flutter Developer with 3+ years of experience building '
+              'cross-platform applications.',
+            ),
+            SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              children: [
+                LanguageBox(text: 'Flutter', fontsize: 12),
+                LanguageBox(text: 'Dart', fontsize: 12),
+                LanguageBox(text: 'Firebase', fontsize: 12),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+## Specialized Layout Widgets
+
+### SkillsBento
+
+A bento-style grid layout for displaying categorized skills.
+
+**Location**: `lib/widgets/skillsbento.dart:9`
+
+#### Structure
+
+The widget consists of:
+
+1. **Header Box**: Yellow/black container with "skills" title and decorative circle
+2. **Section Boxes**: Five bordered sections, each containing:
+   - Category label (left-aligned)
+   - Wrapped `LanguageBox` tags (right-aligned)
+
+#### Categories
+
+- **Languages**: Python, Dart, HTML, CSS, JavaScript, C++
+- **Frameworks**: Flutter, Express.js
+- **Cloud**: Google Cloud, Firebase
+- **Design Tools**: Figma, Adobe Illustrator
+- **Other**: Git, Rest APIs, Markdown
+
+#### Usage
+
+```dart
+// No configuration needed - displays predefined skills
+SkillsBento()
+```
+
+#### Customization
+
+To customize the skills, modify the lists in the widget:
+
+**Location**: `lib/widgets/skillsbento.dart:14`
+
+```dart
+final List<String> languages = [
+  "Python",
+  "Dart",
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "C++",
+  // Add your languages here
+];
+```
+
+#### Responsive Behavior
+
+```dart
+maxWidth: pageWidth <= 900 ? 300.w : pageWidth / 2.6
+```
+
+- **Mobile (≤900px)**: Fixed scaled width of 300w
+- **Desktop (>900px)**: ~38% of screen width
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - **Header**: Yellow background (`#FFFF00`), black text
+    - **Sections**: White background, black borders
+    - **Shadow**: Black, 6px offset
+  </Tab>
+  <Tab title="Dark Mode">
+    - **Header**: Black background, mango yellow text
+    - **Sections**: Black background, mango yellow borders
+    - **Shadow**: Mango yellow glow, 6px offset
+  </Tab>
+</Tabs>
+
+---
+
+### SocialBox
+
+A vertical stack layout for social media links.
+
+**Location**: `lib/widgets/socialbox.dart:13`
+
+#### Usage
+
+```dart
+SocialBox()  // Displays predefined social links
+```
+
+#### Features
+
+- **Responsive Width**: Adapts to screen size
+- **Vertical Spacing**: 8px between each button
+- **Centered Alignment**: Content centered within container
+- **Email Handling**: Uses `mailto:` on mobile, Gmail compose URL on desktop
+
+#### Included Links
+
+1. Email
+2. GitHub
+3. Peerlist
+4. LinkedIn
+5. X (Twitter)
+6. Discord
+7. Instagram
+8. Letterboxd
+
+#### Customization
+
+To add/remove social links, modify the list:
+
+**Location**: `lib/widgets/socialbox.dart:27`
+
+```dart
+children: [
+  SocialLinkButton(
+    link: 'https://yoursite.com',
+    icon: FontAwesomeIcons.globe,
+    pfname: 'yoursite.com',
+    pfcolor: AppColors.skyBlue,
+    vmainaxissize: MainAxisSize.max,
+  ),
+  // ... more buttons
+]
+```
+
+---
+
+## Responsive Layout Patterns
+
+### Breakpoint Strategy
+
+The portfolio uses a single breakpoint at **900px**:
+
+```dart
+final isMobile = MediaQuery.of(context).size.width <= 900;
+```
+
+### Conditional Sizing
+
+Use this pattern throughout your layouts:
+
+```dart
+width: MediaQuery.of(context).size.width <= 900
+  ? 300.w              // Mobile: fixed scaled width
+  : pageWidth / 3.5    // Desktop: proportional width
+```
+
+### Responsive Text
+
+```dart
+fontSize: MediaQuery.of(context).size.width <= 900 ? 12.w : 4.w
+```
+
+### Responsive Constraints
+
+```dart
+Container(
+  constraints: BoxConstraints(
+    maxWidth: MediaQuery.of(context).size.width <= 900
+      ? 300.w
+      : MediaQuery.of(context).size.width / 3.5,
+  ),
+  child: YourWidget(),
+)
+```
+
+---
+
+## Spacing and Padding
+
+### Standard Padding
+
+```dart
+Padding(
+  padding: const EdgeInsets.all(12.0),  // Standard internal padding
+  child: child,
+)
+```
+
+### Card Spacing
+
+```dart
+Padding(
+  padding: const EdgeInsets.symmetric(
+    horizontal: 9.0,
+    vertical: 9.0,
+  ),
+  child: child,
+)
+```
+
+### Section Spacing
+
+```dart
+Padding(
+  padding: const EdgeInsets.symmetric(
+    horizontal: 15.0,
+    vertical: 9.0,
+  ),
+  child: child,
+)
+```
+
+### Vertical Spacing Between Elements
+
+```dart
+SizedBox(height: 8)   // Small gap
+SizedBox(height: 16)  // Medium gap
+SizedBox(height: 24)  // Large gap
+```
+
+---
+
+## Wrapping and Overflow
+
+### Wrap for Tags
+
+Use `Wrap` for horizontal tags that should flow to next line:
+
+```dart
+Wrap(
+  alignment: WrapAlignment.end,
+  spacing: 6.0,        // Horizontal spacing
+  runSpacing: 6.0,     // Vertical spacing between lines
+  children: items.map((item) => LanguageBox(
+    text: item,
+    fontsize: 12,
+  )).toList(),
+)
+```
+
+**Example**: Tech stack in `ProjectCard` (`lib/widgets/projectcard.dart:138`)
+
+### Text Overflow
+
+Handle long text with ellipsis:
+
+```dart
+Text(
+  description,
+  maxLines: 3,
+  overflow: TextOverflow.ellipsis,
+  textAlign: TextAlign.justify,
+)
+```
+
+**Example**: Project description in `ProjectCard` (`lib/widgets/projectcard.dart:122`)
+
+### AutoSizeText
+
+For text that must fit within constraints:
+
+```dart
+import 'package:auto_size_text/auto_size_text.dart';
+
+AutoSizeText(
+  'Long text that needs to fit',
+  overflow: TextOverflow.ellipsis,
+  maxLines: 1,
+)
+```
+
+**Example**: Social link names in `SocialLinkButton` (`lib/widgets/socialbox.dart:149`)
+
+---
+
+## Timeline Layout
+
+### WorkTimeline
+
+A vertical timeline using the `timeline_list` package.
+
+**Location**: `lib/widgets/worktimeline.dart:122`
+
+#### Configuration
+
+```dart
+Timeline(
+  children: items,  // List of Marker widgets
+  properties: TimelineProperties(
+    timelinePosition: TimelinePosition.start,  // Left side
+    iconSize: 30,
+    iconGap: 12,  // Space between dot and card
+    lineColor: isDark ? Colors.white : Colors.black,
+  ),
+)
+```
+
+#### Marker Structure
+
+```dart
+Marker(
+  child: WorkExpContainer(...),  // Content card
+  icon: _buildTimelineIcon(color, iconData),  // Colored dot with icon
+)
+```
+
+#### Custom Timeline Icon
+
+```dart
+Widget _buildTimelineIcon(Color bgColor, IconData iconData) {
+  return Container(
+    width: 30,
+    height: 30,
+    decoration: BoxDecoration(
+      color: bgColor,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(iconData, color: Colors.white, size: 16),
+  );
+}
+```
+
+**Location**: `lib/widgets/worktimeline.dart:128`
+
+---
+
+## Grid Layouts
+
+### Basic Grid Pattern
+
+```dart
+GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: MediaQuery.of(context).size.width <= 900 ? 1 : 3,
+    crossAxisSpacing: 16,
+    mainAxisSpacing: 16,
+    childAspectRatio: 1.2,
+  ),
+  itemCount: items.length,
+  itemBuilder: (context, index) {
+    return YourWidget(items[index]);
+  },
+)
+```
+
+### Responsive Column Count
+
+```dart
+crossAxisCount: MediaQuery.of(context).size.width <= 900
+  ? 1   // Single column on mobile
+  : 3   // Three columns on desktop
+```
+
+### Card Grid with Wrap
+
+For dynamic card sizes:
+
+```dart
+Wrap(
+  spacing: 16,
+  runSpacing: 16,
+  children: items.map((item) => ProjectCard(
+    // ... card properties
+  )).toList(),
+)
+```
+
+---
+
+## Positioning
+
+### Stack with Positioned
+
+Used in `LinkCard` for overlaid social button:
+
+**Location**: `lib/widgets/linkcard.dart:135`
+
+```dart
+Stack(
+  clipBehavior: Clip.none,  // Allow overflow
+  children: [
+    // Main card
+    Container(...),
+    
+    // Overlaid badge
+    Positioned(
+      left: -10,
+      top: -10,
+      child: SocialLinkButton(...),
+    ),
+  ],
+)
+```
+
+### Centered Content
+
+```dart
+Center(
+  child: YourWidget(),
+)
+```
+
+### Alignment
+
+```dart
+Align(
+  alignment: Alignment.topRight,
+  child: YourWidget(),
+)
+```
+
+---
+
+## Best Practices
+
+### 1. Use Constraints, Not Fixed Sizes
+
+```dart
+// Good: Flexible with max constraint
+Container(
+  constraints: BoxConstraints(
+    maxWidth: 600,
+  ),
+  child: child,
+)
+
+// Bad: Fixed size that breaks on small screens
+Container(
+  width: 600,
+  child: child,
+)
+```
+
+### 2. Make Width Responsive
+
+```dart
+// Good: Adapts to screen size
+width: pageWidth <= 900 ? 300.w : pageWidth / 3.5
+
+// Bad: Static width
+width: 400
+```
+
+### 3. Maintain Consistent Spacing
+
+```dart
+// Use consistent padding values
+const double standardPadding = 12.0;
+const double cardPadding = 9.0;
+const double sectionPadding = 15.0;
+```
+
+### 4. Clamp Font Sizes
+
+```dart
+fontSize: (pageWidth <= 900 ? 12.w : 5.w).clamp(10, 24)
+```
+
+This prevents fonts from becoming too small or too large.
+
+### 5. Use Expanded and Flexible
+
+```dart
+Row(
+  children: [
+    Text('Label'),
+    SizedBox(width: 8),
+    Expanded(  // Takes remaining space
+      child: TextField(),
+    ),
+  ],
+)
+```
+
+### 6. Test Overflow Scenarios
+
+Always test with:
+- Very long text
+- Many items in lists
+- Small screen sizes
+- Large screen sizes
+
+---
+
+## Creating Custom Layouts
+
+### Basic Layout Template
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:portfolio/consts/style.dart';
+
+class CustomLayout extends StatelessWidget {
+  final List<Widget> children;
+
+  const CustomLayout({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final pageWidth = MediaQuery.of(context).size.width;
+    final isMobile = pageWidth <= 900;
+
+    return Container(
+      width: isMobile ? 300.w : pageWidth / 2.5,
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children
+          .map((child) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: child,
+          ))
+          .toList(),
+      ),
+    );
+  }
+}
+```
+
+### Responsive Container Template
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/consts/style.dart';
+
+class ResponsiveContainer extends StatelessWidget {
+  final Widget child;
+  final Color color;
+
+  const ResponsiveContainer({
+    super.key,
+    required this.child,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? AppColors.black : color;
+    final accentColor = isDark ? color : AppColors.black;
+
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width <= 900
+          ? 300
+          : 600,
+      ),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: accentColor, width: 3.0),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor,
+            spreadRadius: 2.0,
+            offset: const Offset(3, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: child,
+    );
+  }
+}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Widget Documentation" icon="cube" href="/components/widgets">
+    Explore display and interactive widgets
+  </Card>
+  <Card title="Neobrutalism Guide" icon="palette" href="/components/neobrutalism">
+    Understand the design system
+  </Card>
+  <Card title="Responsive Design" icon="mobile" href="/features/responsive-design">
+    Learn responsive design strategies
+  </Card>
+  <Card title="Content Customization" icon="pen" href="/customization/content">
+    Customize your content
+  </Card>
+</CardGroup>

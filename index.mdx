@@ -1,97 +1,207 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Portfolio Documentation"
+description: "Build a stunning Flutter web portfolio with neobrutalism design"
+mode: "custom"
 ---
 
-## Setting up
+<div className="relative overflow-hidden py-20 dark:bg-[#0f1117] bg-gradient-to-br from-[#90a8ed] to-[#B4D6F8]">
+  <div className="absolute inset-0 dark:bg-[#0f1117]/90 bg-black/10"></div>
+  <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
+    <div className="grid grid-cols-1 gap-12 items-center">
+      <div className="text-center">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+          Build Your Portfolio with Flutter
+        </h1>
+        <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-8">
+          A responsive, modern portfolio template featuring neobrutalism design, custom widgets, and smooth animations
+        </p>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <a 
+            href="/quickstart" 
+            className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-[#90a8ed] font-semibold hover:bg-white/90 transition-colors no-underline"
+          >
+            Get Started
+            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a 
+            href="/components/overview" 
+            className="inline-flex items-center px-6 py-3 rounded-lg border-2 border-white/30 bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors no-underline"
+          >
+            Explore Components
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-Get your documentation site up and running in minutes.
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="text-center mb-12">
+    <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-4">Quick Start</h2>
+    <p className="text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      Get your portfolio up and running in minutes
+    </p>
+  </div>
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+  <Steps>
+    <Step title="Clone the repository">
+      Clone the portfolio source code to your local machine:
+      ```bash
+      git clone https://github.com/himanshubalani/portfolio_source.git
+      cd portfolio_source
+      ```
+    </Step>
+    
+    <Step title="Install dependencies">
+      Install Flutter dependencies using pub:
+      ```bash
+      flutter pub get
+      ```
+    </Step>
+    
+    <Step title="Customize your content">
+      Edit the content in `lib/pages/` to add your own information, projects, and skills. Update colors in `lib/consts/style.dart` to match your brand.
+    </Step>
+    
+    <Step title="Run the application">
+      Start the development server:
+      ```bash
+      flutter run -d chrome
+      ```
+      Your portfolio will open in Chrome at `http://localhost:port`
+    </Step>
+  </Steps>
+</div>
 
-## Make it yours
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="mb-12">
+    <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-4">Key Features</h2>
+    <p className="text-base text-gray-600 dark:text-gray-400">
+      Everything you need to create a stunning portfolio website
+    </p>
+  </div>
 
-Design a docs site that looks great and empowers your users.
+  <CardGroup cols={2}>
+    <Card title="Responsive Design" icon="mobile-screen" href="/features/responsive-design">
+      Optimized layouts for mobile, tablet, and desktop screens
+    </Card>
+    <Card title="Neobrutalism UI" icon="paintbrush" href="/components/neobrutalism">
+      Bold, modern design with thick borders and vibrant shadows
+    </Card>
+    <Card title="Custom Widgets" icon="cube" href="/components/widgets">
+      Reusable components including project cards, skill boxes, and timelines
+    </Card>
+    <Card title="Theme Support" icon="moon" href="/features/theming">
+      Built-in dark and light theme with smooth transitions
+    </Card>
+    <Card title="Animations" icon="sparkles" href="/features/animations">
+      Animated backgrounds, hover effects, and page transitions
+    </Card>
+    <Card title="Keyboard Shortcuts" icon="keyboard" href="/features/routing">
+      Navigate your portfolio with keyboard shortcuts for better accessibility
+    </Card>
+  </CardGroup>
+</div>
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="mb-12">
+    <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-4">Explore by Topic</h2>
+    <p className="text-base text-gray-600 dark:text-gray-400">
+      Deep dive into specific aspects of the portfolio
+    </p>
+  </div>
 
-## Create beautiful pages
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <a 
+      href="/components/overview" 
+      className="group block rounded-2xl border-2 border-gray-200 dark:border-[#27272a] hover:border-[#90a8ed] dark:hover:border-[#90a8ed] overflow-hidden transition-colors no-underline"
+    >
+      <div className="p-6 dark:bg-[#1a1d27] bg-white">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Component Library</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Explore all the reusable widgets and UI components available in the portfolio
+        </p>
+        <span className="text-sm font-medium text-[#90a8ed] group-hover:text-[#B4D6F8] inline-flex items-center">
+          View components
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
 
-Everything you need to create world-class documentation.
+    <a 
+      href="/customization/colors" 
+      className="group block rounded-2xl border-2 border-gray-200 dark:border-[#27272a] hover:border-[#90a8ed] dark:hover:border-[#90a8ed] overflow-hidden transition-colors no-underline"
+    >
+      <div className="p-6 dark:bg-[#1a1d27] bg-white">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Customization Guide</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Learn how to customize colors, fonts, and content to match your personal brand
+        </p>
+        <span className="text-sm font-medium text-[#90a8ed] group-hover:text-[#B4D6F8] inline-flex items-center">
+          Customize your site
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+    <a 
+      href="/features/animations" 
+      className="group block rounded-2xl border-2 border-gray-200 dark:border-[#27272a] hover:border-[#90a8ed] dark:hover:border-[#90a8ed] overflow-hidden transition-colors no-underline"
+    >
+      <div className="p-6 dark:bg-[#1a1d27] bg-white">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Animations & Effects</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Discover the animated backgrounds, hover effects, and transitions that bring the portfolio to life
+        </p>
+        <span className="text-sm font-medium text-[#90a8ed] group-hover:text-[#B4D6F8] inline-flex items-center">
+          Learn about animations
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
 
-## Need inspiration?
+    <a 
+      href="/deployment/building" 
+      className="group block rounded-2xl border-2 border-gray-200 dark:border-[#27272a] hover:border-[#90a8ed] dark:hover:border-[#90a8ed] overflow-hidden transition-colors no-underline"
+    >
+      <div className="p-6 dark:bg-[#1a1d27] bg-white">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Deployment</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          Build and deploy your portfolio to GitHub Pages, Firebase, or any static hosting platform
+        </p>
+        <span className="text-sm font-medium text-[#90a8ed] group-hover:text-[#B4D6F8] inline-flex items-center">
+          Deploy your site
+          <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </a>
+  </div>
+</div>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="rounded-2xl dark:bg-[#1a1d27] bg-gradient-to-r from-[#90a8ed] to-[#B4D6F8] p-8 text-center border-2 border-gray-200 dark:border-[#27272a]">
+    <h2 className="text-3xl font-bold text-white mb-4">Ready to Build Your Portfolio?</h2>
+    <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">
+      Start with our quickstart guide and have your portfolio running in minutes
+    </p>
+    <a 
+      href="/quickstart" 
+      className="inline-flex items-center px-6 py-3 rounded-lg bg-white text-[#90a8ed] font-semibold hover:bg-white/90 transition-colors no-underline"
+    >
+      Get Started Now
+      <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
+  </div>
+</div>

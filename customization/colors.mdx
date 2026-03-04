@@ -1,0 +1,247 @@
+---
+title: "Color Customization"
+description: "Customize the neobrutalism color palette for your portfolio"
+---
+
+## Overview
+
+The portfolio uses a comprehensive color system defined in `lib/consts/style.dart`. The `AppColors` class provides a centralized color palette with over 40 predefined colors organized into categories.
+
+## Color System Architecture
+
+Colors are defined in the `AppColors` class at `lib/consts/style.dart:129`.
+
+```dart
+class AppColors {
+  AppColors._(); // Private constructor to prevent instantiation
+
+  // Primary color
+  static const Color primaryPurple = Color(0xFF90a8ed);
+
+  // Social media colors
+  static const Color email = Color(0xFFEA4335);
+  static const Color linkedin = Color(0xff0077b5);
+  // ... more colors
+}
+```
+
+## Color Categories
+
+### Primary Brand Colors
+
+The primary color used throughout the portfolio:
+
+- **primaryPurple** - `#90a8ed` - Main brand color used for accents and highlights
+
+### Social Media Colors
+
+Predefined colors for social platform icons:
+
+| Platform | Color Variable | Hex Code |
+|----------|---------------|----------|
+| Email | `AppColors.email` | `#EA4335` |
+| LinkedIn | `AppColors.linkedin` | `#0077b5` |
+| GitHub | `AppColors.github` | `#24292e` |
+| Twitter/X | `AppColors.xtwitter` | `#141417` |
+| Instagram | `AppColors.instagram` | `#d62976` |
+| Discord | `AppColors.discord` | `#7289DA` |
+| Peerlist | `AppColors.peerlist` | `#00ab46` |
+| YouTube | `AppColors.youtube` | `#FF0000` |
+
+### Background Colors (Row 1)
+
+Pastel and light colors perfect for backgrounds:
+
+```dart
+static const Color lightTeal = Color(0xFFDAF5F0);
+static const Color paleGreen = Color(0xFFB5D2AD);
+static const Color paleYellow = Color(0xFFFDFD96);
+static const Color lightPeach = Color(0xFFF8D6B3);
+static const Color lightPink = Color(0xFFFCDFFF);
+static const Color lightLavender = Color(0xFFE3DFF2);
+static const Color creamPeach = Color(0xFFF1DBBF);
+```
+
+### Medium Tones (Row 2)
+
+Vibrant mid-range colors for accents:
+
+```dart
+static const Color lightBlue = Color(0xFFB4D6F8);
+static const Color mediumTeal = Color(0xFFA7DBD8);
+static const Color lightLimeGreen = Color(0xFFBAFCA2);
+static const Color mangoYellow = Color(0xFFFBFF2F);
+static const Color brightOrange = Color(0xFFFFDB58);
+static const Color coralRed = Color(0xFFFFA07A);
+static const Color softPink = Color(0xFFFFC0CB);
+static const Color palePurple = Color(0xFFC4A1FF);
+```
+
+### Saturated Colors (Row 3)
+
+Rich, saturated colors for emphasis:
+
+```dart
+static const Color skyBlue = Color(0xFF93D6F1);
+static const Color toolJetBlue = Color.fromARGB(255, 64, 117, 239);
+static const Color lightGreen = Color(0xFF90EE90);
+static const Color mustardYellow = Color(0xFFF4D738);
+static const Color tomatoRed = Color(0xFFFF7A5C);
+static const Color lavenderPink = Color(0xFFFFB2EF);
+static const Color darkPurple = Color(0xFFA388EE);
+static const Color darkLavendar = Color(0xFF261B46);
+```
+
+### Bold Colors (Row 4)
+
+Deep, bold colors for maximum contrast:
+
+```dart
+static const Color royalBlue = Color(0xFF8DA6F5);
+static const Color lightSeafoamGreen = Color(0xFF8ADEEF);
+static const Color irishGreen = Color(0xFF09AC06);
+static const Color oliveGreen = Color(0xFF7FBC8C);
+static const Color rustyOrange = Color(0xFFE3A018);
+static const Color darkRed = Color(0xFFFF6B6B);
+static const Color hotPink = Color(0xFFFF69B4);
+static const Color darkViolet = Color(0xFF9723C9);
+static const Color deepSaffron = Color(0xFFFFA500);
+```
+
+### Standard Colors
+
+Neutral colors for base UI elements:
+
+```dart
+static const Color transparent = Color(0x00ffffff);
+static const Color white = Color(0xFFF0F0F0); // Slightly off-white
+static const Color black = Color(0xFF121212); // True black
+static const Color offwhite = Color(0xFFF0F4F7);
+```
+
+## Customizing Colors
+
+### Change Primary Color
+
+To change the main brand color, update `primaryPurple` in `lib/consts/style.dart:133`:
+
+```dart
+static const Color primaryPurple = Color(0xFF6B5CE7); // New purple
+```
+
+### Add New Color
+
+Add a new color constant to the `AppColors` class:
+
+```dart
+class AppColors {
+  // ... existing colors
+  
+  // Your custom colors
+  static const Color customBlue = Color(0xFF3498db);
+  static const Color customGreen = Color(0xFF2ecc71);
+}
+```
+
+### Page Background Colors
+
+Each page uses different background colors. Update these in the respective page files:
+
+#### Homepage Background
+
+In `lib/pages/homepage.dart:62`:
+
+```dart
+backgroundColor: isDark ? AppColors.black : AppColors.primaryPurple,
+```
+
+#### Projects Page Background
+
+In `lib/pages/projects.dart:32`:
+
+```dart
+backgroundColor: isDark ? AppColors.black : AppColors.lightPeach,
+```
+
+#### About Page Background
+
+In `lib/pages/about.dart:34`:
+
+```dart
+backgroundColor: isDark ? AppColors.black : AppColors.skyBlue,
+```
+
+## Animated Background Colors
+
+The animated pill backgrounds can be customized by changing the `color` parameter:
+
+```dart
+AnimatedPillsBackground(
+  rows: 10,
+  columns: 24,
+  color: AppColors.discord, // Change this color
+  duration: Duration(seconds: 4),
+)
+```
+
+<Note>
+When changing colors, ensure sufficient contrast for accessibility. The neobrutalism design relies on high contrast between elements.
+</Note>
+
+## Theme-Aware Colors
+
+The portfolio supports both light and dark themes. Use conditional color selection:
+
+```dart
+color: isDark ? AppColors.primaryPurple : AppColors.black
+```
+
+Where `isDark` is defined as:
+
+```dart
+bool get isDark {
+  return Theme.of(context).brightness == Brightness.dark;
+}
+```
+
+## Tooltip Colors
+
+Tooltips use theme-aware colors defined in `TooltipStyles` at `lib/consts/style.dart:89`:
+
+```dart
+static BoxDecoration decoration({required bool isDark}) {
+  return BoxDecoration(
+    color: isDark ? AppColors.black : Colors.white,
+    border: Border.all(
+      color: isDark ? AppColors.brightOrange : AppColors.black,
+      width: 2,
+    ),
+    borderRadius: BorderRadius.circular(8),
+  );
+}
+```
+
+<Tip>
+Use the existing color palette as a starting point. The colors are carefully selected to work well together in the neobrutalism design style.
+</Tip>
+
+## Best Practices
+
+1. **Consistency** - Use colors from the `AppColors` class rather than defining inline colors
+2. **Contrast** - Maintain high contrast between foreground and background for readability
+3. **Theme Support** - Always provide both light and dark theme color variants
+4. **Semantic Naming** - Name colors based on their purpose or appearance, not their usage
+5. **Border Colors** - In neobrutalism design, borders are typically black with 2-3px width
+
+## Example: Custom Color Component
+
+```dart
+NeoBrutalContainer(
+  text: 'Click Me',
+  width: 200.w,
+  height: 50.w,
+  fontsize: 16.sp,
+  color: AppColors.mustardYellow, // Use palette color
+  path: '/about',
+)
+```

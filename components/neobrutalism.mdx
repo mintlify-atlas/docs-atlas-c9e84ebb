@@ -1,0 +1,709 @@
+---
+title: 'Neobrutalism Design System'
+description: 'Design principles, styling patterns, and implementation guide for the neobrutalism aesthetic'
+---
+
+## What is Neobrutalism?
+
+Neobrutalism (also called "new brutalism") is a web design trend characterized by:
+
+- **Bold borders** (typically 2-4px thick)
+- **High contrast** color combinations
+- **Offset shadows** creating a layered, "popped out" effect
+- **Raw, unpolished** aesthetic with minimal gradients
+- **Geometric shapes** with sharp corners or consistent border radius
+- **Flat colors** without blur or opacity effects (except for intentional neon glows)
+
+This portfolio implements neobrutalism with a twist: theme-aware color inversion for dark mode.
+
+## Design Principles
+
+### 1. Color Inversion Pattern
+
+The signature feature of this implementation is how components adapt to theme:
+
+<Tabs>
+  <Tab title="Light Mode">
+    **Pattern**: Colored background + Black accents
+    
+    ```dart
+    // Light mode styling
+    bgColor = color;              // Use the component's color
+    borderColor = Colors.black;   // Black borders
+    shadowColor = Colors.black;   // Black shadow
+    textColor = Colors.black;     // Black text
+    ```
+    
+    This creates a **traditional neobrutalism** look with vibrant backgrounds and dark outlines.
+  </Tab>
+  <Tab title="Dark Mode">
+    **Pattern**: Black background + Colored accents (neon effect)
+    
+    ```dart
+    // Dark mode styling
+    bgColor = Colors.black;       // Black background
+    borderColor = color;          // Colored borders (neon)
+    shadowColor = color;          // Colored shadow (glow)
+    textColor = color;            // Colored text
+    ```
+    
+    This creates a **cyberpunk neon** aesthetic with glowing colored outlines against dark backgrounds.
+  </Tab>
+</Tabs>
+
+### 2. Border Specifications
+
+All neobrutalism components use consistent border styling:
+
+```dart
+Border.all(
+  color: borderColor,
+  width: 3.0,  // Standard thickness
+)
+```
+
+**Location**: Applied consistently across all components
+
+<Note>
+  Some smaller elements like `LanguageBox` and `BoxCircles` use 2px borders to maintain visual balance at smaller sizes.
+</Note>
+
+### 3. Shadow Pattern
+
+Neobrutalism shadows are solid, not blurred:
+
+<CodeGroup>
+
+```dart Light Mode Shadow
+boxShadow: [
+  BoxShadow(
+    color: Colors.black,
+    spreadRadius: 2.0,
+    offset: Offset(3, 3),  // Right and down
+    blurRadius: 0,         // No blur!
+  ),
+]
+```
+
+```dart Dark Mode Glow
+boxShadow: [
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.9),
+    blurRadius: 12,
+    spreadRadius: 1,
+  ),
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.5),
+    blurRadius: 30,
+    spreadRadius: 6,
+  ),
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.25),
+    blurRadius: 60,
+    spreadRadius: 12,
+  ),
+]
+```
+
+</CodeGroup>
+
+**Key Difference**:
+- Light mode uses **solid shadows** with no blur (pure neobrutalism)
+- Dark mode uses **layered glows** for the cyberpunk neon effect
+
+### 4. Border Radius
+
+Rounded corners soften the harsh aesthetic slightly:
+
+| Element Type | Radius | Usage |
+|--------------|--------|-------|
+| Small pills | 12-14px | `LanguageBox`, small buttons |
+| Cards | 18px | `ProjectCard`, `NeoBrutalContainer` |
+| Boxes | 20px | `NeoBrutalBox`, `SkillsBento` |
+| Circles | 50% | `BoxCircles` indicators |
+
+```dart
+borderRadius: BorderRadius.circular(18)
+```
+
+### 5. Color Palette Strategy
+
+The `AppColors` class provides 40+ colors organized by intensity:
+
+**Location**: `lib/consts/style.dart:129`
+
+#### Primary Colors
+```dart
+AppColors.primaryPurple   // #90a8ed - Brand color
+AppColors.black           // #121212 - True black
+AppColors.white           // #F0F0F0 - Slightly off-white
+```
+
+#### Pastel Background Colors
+Used for light mode backgrounds:
+```dart
+AppColors.lightTeal       // #DAF5F0
+AppColors.paleGreen       // #B5D2AD
+AppColors.paleYellow      // #FDFD96
+AppColors.lightPeach      // #F8D6B3
+AppColors.lightPink       // #FCDFFF
+AppColors.lightLavender   // #E3DFF2
+```
+
+#### Vibrant Accent Colors
+Used for dark mode neon effects:
+```dart
+AppColors.brightOrange    // #FFDB58
+AppColors.mangoYellow     // #FBFF2F
+AppColors.hotPink         // #FF69B4
+AppColors.darkPurple      // #A388EE
+AppColors.lightSeafoamGreen // #8ADEEF
+```
+
+#### Social Media Colors
+Platform-specific brand colors:
+```dart
+AppColors.github          // #24292e
+AppColors.linkedin        // #0077b5
+AppColors.discord         // #7289DA
+// ... and 8+ more
+```
+
+## Implementation Patterns
+
+### Pattern 1: Basic Neobrutalism Container
+
+The simplest implementation:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/consts/style.dart';
+
+class SimpleNeoContainer extends StatelessWidget {
+  final Color color;
+  final Widget child;
+
+  const SimpleNeoContainer({
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color bgColor = isDark ? AppColors.black : color;
+    final Color accentColor = isDark ? color : AppColors.black;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: accentColor, width: 3.0),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor,
+            spreadRadius: 2.0,
+            offset: Offset(3, 3),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+```
+
+**Usage**:
+```dart
+SimpleNeoContainer(
+  color: AppColors.lightPeach,
+  child: Text('Hello World'),
+)
+```
+
+### Pattern 2: Container with Header
+
+Used in `NeoBrutalBox`:
+
+**Location**: `lib/widgets/neobrutalbox.dart:7`
+
+```dart
+NeoBrutalBox(
+  headerText: 'Section Title',
+  headerColor: AppColors.lightLavender,
+  containerChild: YourContentWidget(),
+)
+```
+
+**Structure**:
+1. Outer container with border and shadow
+2. Header section with bottom border
+3. Decorative `BoxCircles` in header
+4. Body section with content
+
+**Theme Behavior**:
+- **Light Mode**: Colored header background, white body
+- **Dark Mode**: Black header and body, colored text and borders
+
+### Pattern 3: Interactive Button Style
+
+Used in `SocialLinkButton`:
+
+**Location**: `lib/widgets/socialbox.dart:99`
+
+```dart
+OnHover(
+  builder: (bool isHovered) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark 
+          ? (isHovered ? pfcolor : AppColors.black)
+          : pfcolor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? pfcolor : AppColors.black,
+          width: 3.0,
+        ),
+      ),
+      child: child,
+    );
+  },
+)
+```
+
+**Hover Effect**:
+- Light mode: Background stays colored, lifts up
+- Dark mode: Background fills with color on hover, lifts up
+
+### Pattern 4: Pill Tags
+
+Used in `LanguageBox`:
+
+**Location**: `lib/widgets/languagebox.dart:5`
+
+```dart
+Container(
+  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+  decoration: BoxDecoration(
+    color: isDark ? Colors.transparent : getColorForItem(text),
+    borderRadius: BorderRadius.circular(12),
+    border: Border.all(
+      color: isDark ? getColorForItem(text) : Colors.black,
+      width: 3.0,
+    ),
+  ),
+  child: Text(
+    text,
+    style: TextStyle(
+      color: isDark ? getColorForItem(text) : Colors.black,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+)
+```
+
+**Theme Behavior**:
+- Light mode: Filled pill with colored background
+- Dark mode: Outlined pill with transparent background
+
+## Style Utilities
+
+### AppStyles Class
+
+Provides reusable decoration methods:
+
+**Location**: `lib/consts/style.dart:13`
+
+```dart
+class AppStyles {
+  // Button style for social icons
+  ButtonStyle socialIconStyle = ButtonStyle(
+    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+    ),
+    padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+      EdgeInsets.all(12.0),
+    ),
+    side: WidgetStateProperty.all<BorderSide>(
+      BorderSide(color: Colors.black, width: 3.0),
+    ),
+  );
+
+  // Text style using Outfit font
+  TextStyle outfitTextStyle = TextStyle(
+    fontFamily: GoogleFonts.outfit().fontFamily,
+    fontSize: 30,
+  );
+
+  // Container decoration #1: Full border with shadow
+  BoxDecoration neoContainerDecorationOne() {
+    return BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(width: 2),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black,
+          spreadRadius: 1.0,
+          offset: Offset(4, 6),
+        ),
+      ],
+    );
+  }
+
+  // Container decoration #2: Top-only rounded corners
+  BoxDecoration neoContainerDecorationTwo() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+      border: Border(
+        bottom: BorderSide(color: Colors.black, width: 2),
+        // Other sides have width 0
+      ),
+    );
+  }
+}
+```
+
+**Usage**:
+```dart
+Container(
+  decoration: AppStyles().neoContainerDecorationOne(),
+  child: YourWidget(),
+)
+```
+
+### TooltipStyles Class
+
+Theme-aware tooltip styling:
+
+**Location**: `lib/consts/style.dart:88`
+
+```dart
+class TooltipStyles {
+  static BoxDecoration decoration({required bool isDark}) {
+    return BoxDecoration(
+      color: isDark ? AppColors.black : Colors.white,
+      border: Border.all(
+        color: isDark ? AppColors.brightOrange : AppColors.black,
+        width: 2,
+      ),
+      borderRadius: BorderRadius.circular(8),
+    );
+  }
+
+  static TextStyle textStyle({required bool isDark}) {
+    return TextStyle(
+      color: isDark ? AppColors.brightOrange : AppColors.black,
+      fontSize: 12,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1,
+    );
+  }
+
+  static const EdgeInsets padding = 
+    EdgeInsets.symmetric(horizontal: 8, vertical: 6);
+  static const EdgeInsets margin = EdgeInsets.only(top: 8);
+  static const double verticalOffset = 12;
+}
+```
+
+**Usage**:
+```dart
+final isDark = Theme.of(context).brightness == Brightness.dark;
+
+Tooltip(
+  decoration: TooltipStyles.decoration(isDark: isDark),
+  textStyle: TooltipStyles.textStyle(isDark: isDark),
+  padding: TooltipStyles.padding,
+  margin: TooltipStyles.margin,
+  verticalOffset: TooltipStyles.verticalOffset,
+  message: 'Tooltip text',
+  child: IconButton(icon: Icon(Icons.info)),
+)
+```
+
+## Typography
+
+### Primary Font: Outfit
+
+All components use the Outfit font from Google Fonts:
+
+```dart
+import 'package:google_fonts/google_fonts.dart';
+
+TextStyle(
+  fontFamily: GoogleFonts.outfit().fontFamily,
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+)
+```
+
+### Alternative Font: Quicksand
+
+Used specifically in `SocialLinkButton` for social media names:
+
+**Location**: `lib/widgets/socialbox.dart:155`
+
+```dart
+TextStyle(
+  fontFamily: GoogleFonts.quicksand(fontWeight: FontWeight.bold).fontFamily,
+)
+```
+
+### Font Weights
+
+| Weight | Usage |
+|--------|-------|
+| 400 (regular) | Body text, descriptions |
+| 600 (semi-bold) | Subheadings, metadata |
+| 700 (bold) | Headings, buttons, emphasis |
+
+## Responsive Styling
+
+### Screen Width Breakpoint
+
+The portfolio uses a single breakpoint at 900px:
+
+```dart
+final isMobile = MediaQuery.of(context).size.width <= 900;
+```
+
+### Responsive Font Sizing
+
+Uses `flutter_screenutil` for scaled sizing:
+
+```dart
+fontSize: MediaQuery.of(context).size.width <= 900 
+  ? 12.w   // Mobile: scaled width units
+  : 4.w    // Desktop: scaled width units
+```
+
+### Responsive Widths
+
+```dart
+width: pageWidth <= 900 
+  ? 300.w              // Mobile: fixed scaled width
+  : pageWidth / 3.5    // Desktop: fraction of screen width
+```
+
+### Clamping Values
+
+Prevents extreme sizes on very large or small screens:
+
+```dart
+fontSize: (pageWidth <= 900 ? 12.w : 5.w).clamp(10, 24)
+```
+
+## Animation Principles
+
+### 1. Hover Lift Effect
+
+Implemented via `OnHover` widget:
+
+**Location**: `lib/presentation/onhover.dart:2`
+
+```dart
+final hovered = Matrix4.identity()..translate(0, -10, 0);
+final transform = isHovered ? hovered : Matrix4.identity();
+
+AnimatedContainer(
+  duration: Duration(milliseconds: 200),
+  transform: transform,
+  child: widget.builder(isHovered),
+)
+```
+
+**Parameters**:
+- **Distance**: 10px upward
+- **Duration**: 200ms
+- **Curve**: Implicit (linear)
+
+### 2. Breathing Pills
+
+Implemented in `AnimatedPillsBackground`:
+
+**Location**: `lib/widgets/animated_pill_bg.dart:4`
+
+```dart
+AnimationController(
+  vsync: this,
+  duration: Duration(seconds: 5),
+)..repeat(reverse: true);
+
+final anim = sin((t * 2 * pi) + pill.delay);
+final normalized = (anim + 1) / 2;  // 0 to 1
+final height = baseHeight + normalized * maxHeight;
+final opacity = 0.1 + normalized * 0.4;  // 0.1 to 0.5
+```
+
+**Characteristics**:
+- Sine wave animation for smooth breathing
+- Staggered delays for organic movement
+- Synchronized height and opacity changes
+
+### 3. Theme Transitions
+
+Theme changes animate automatically via Flutter's implicit animations:
+
+```dart
+AnimatedContainer(
+  duration: Duration(milliseconds: 300),
+  color: isDark ? AppColors.black : AppColors.white,
+  // ... other properties
+)
+```
+
+## Dark Mode Glow Effect
+
+The signature neon glow uses three layered shadows:
+
+```dart
+boxShadow: isDark ? [
+  // Inner glow: sharp, high opacity
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.9),
+    blurRadius: 12,
+    spreadRadius: 1,
+  ),
+  // Middle glow: softer, medium opacity
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.5),
+    blurRadius: 30,
+    spreadRadius: 6,
+  ),
+  // Outer glow: very soft, low opacity
+  BoxShadow(
+    color: accentColor.withValues(alpha: 0.25),
+    blurRadius: 60,
+    spreadRadius: 12,
+  ),
+] : [],
+```
+
+**Examples**:
+- **ProfileImage**: Seafoam green glow (`lib/widgets/profileimage.dart:28`)
+- **LinkCard**: Color-matched glow (`lib/widgets/linkcard.dart:57`)
+
+## Best Practices
+
+### 1. Always Check Theme
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final bool isDark = Theme.of(context).brightness == Brightness.dark;
+  // Use isDark for all styling decisions
+}
+```
+
+<Warning>
+  Do NOT use static `isDark` variables. Theme can change at runtime.
+</Warning>
+
+### 2. Follow the Color Inversion Pattern
+
+```dart
+final Color bgColor = isDark ? AppColors.black : componentColor;
+final Color accentColor = isDark ? componentColor : AppColors.black;
+```
+
+### 3. Maintain Consistent Spacing
+
+```dart
+Padding(
+  padding: EdgeInsets.all(12.0),  // Standard internal padding
+  child: child,
+)
+```
+
+### 4. Use Semantic Color Names
+
+Prefer named colors from `AppColors` over hex values:
+
+```dart
+// Good
+color: AppColors.lightPeach
+
+// Bad
+color: Color(0xFFF8D6B3)
+```
+
+### 5. Test Both Themes
+
+Always verify your component in both light and dark modes:
+
+```dart
+// Quick theme toggle for testing
+IconButton(
+  icon: Icon(Icons.brightness_6),
+  onPressed: () {
+    // Toggle theme implementation
+  },
+)
+```
+
+## Creating Custom Neobrutalism Components
+
+Follow this template:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:portfolio/consts/style.dart';
+
+class CustomNeoWidget extends StatelessWidget {
+  final Color color;
+  final Widget child;
+
+  const CustomNeoWidget({
+    super.key,
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Determine theme
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // 2. Apply color inversion pattern
+    final Color bgColor = isDark ? AppColors.black : color;
+    final Color accentColor = isDark ? color : AppColors.black;
+
+    // 3. Build with neobrutalism styling
+    return Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: accentColor,
+          width: 3.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor,
+            spreadRadius: 2.0,
+            offset: const Offset(3, 3),
+            blurRadius: isDark ? 12 : 0,  // Glow only in dark mode
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: child,
+    );
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Layout Components" icon="table-cells" href="/components/layout">
+    Learn about containers and structural widgets
+  </Card>
+  <Card title="Color Customization" icon="palette" href="/customization/colors">
+    Customize the color palette
+  </Card>
+</CardGroup>

@@ -1,0 +1,301 @@
+---
+title: Theming
+description: Dark and light theme implementation with dynamic switching
+---
+
+The portfolio features a complete **dark/light theme system** powered by Flutter's Material 3 theming and GetX's theme management, with smooth transitions and theme-aware components.
+
+## Theme Configuration
+
+Both themes are defined in the main application setup:
+
+```dart title="lib/main.dart:30-44"
+GetMaterialApp(
+  debugShowCheckedModeBanner: false,
+  title: 'Himanshu Balani Portfolio',
+  themeMode: ThemeMode.light,
+  
+  theme: ThemeData(
+    brightness: Brightness.light,
+    useMaterial3: true,
+    fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+  ),
+  
+  darkTheme: ThemeData(
+    brightness: Brightness.dark,
+    useMaterial3: true,
+    fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+  ),
+  
+  routes: {...},
+  home: const HomePage(),
+)
+```
+
+<Note>
+  Both themes use the **Outfit** font family from Google Fonts with bold weight for a strong, modern aesthetic that aligns with the neobrutalism design.
+</Note>
+
+## Theme Toggle Component
+
+Users can switch themes with an animated toggle button:
+
+```dart title="lib/widgets/dark_mode_toggle.dart"
+class DarkModeToggle extends StatelessWidget {
+  const DarkModeToggle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: () {
+        Get.changeThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
+      },
+      child: RepaintBoundary(
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          child: Center(
+            child: Tooltip(
+              message: isDark ? "Dawn":"Dusk",
+              decoration: TooltipStyles.decoration(isDark: isDark),
+              textStyle: TooltipStyles.textStyle(isDark: isDark),
+              child: Transform.flip(
+                flipY: true,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(
+                      scale: animation,
+                      child: RotationTransition(
+                        turns: animation,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    isDark ? Icons.wb_incandescent_outlined 
+                           : Icons.lightbulb_outline_rounded,
+                    key: ValueKey(isDark),
+                    size: 28,
+                    color: isDark ? AppColors.brightOrange : Colors.black,
+                    semanticLabel: isDark ? 'Light Mode' : 'Dark Mode',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Animation Features
+
+<CardGroup cols={2}>
+  <Card title="Scale + Rotation" icon="rotate">
+    The icon scales and rotates simultaneously during theme transitions for a playful effect.
+  </Card>
+  
+  <Card title="Icon Swap" icon="lightbulb">
+    Light bulb icons swap between outlined and incandescent styles based on current theme.
+  </Card>
+  
+  <Card title="Color Shift" icon="palette">
+    Icon color changes from black (light) to bright orange (dark) to maintain visibility.
+  </Card>
+  
+  <Card title="Repaint Boundary" icon="brush">
+    Wrapped in `RepaintBoundary` to isolate repaints and optimize performance.
+  </Card>
+</CardGroup>
+
+## Color System
+
+The app defines a comprehensive color palette in `AppColors`:
+
+```dart title="lib/consts/style.dart:129-194"
+class AppColors {
+  AppColors._(); // Private constructor to prevent instantiation
+
+  // Primary
+  static const Color primaryPurple = Color(0xFF90a8ed);
+
+  // Social media colors
+  static const Color email = Color(0xFFEA4335);
+  static const Color linkedin = Color(0xff0077b5);
+  static const Color github = Color(0xff24292e);
+  static const Color discord = Color(0xFF7289DA);
+  
+  // Background colors
+  static const Color lightTeal = Color(0xFFDAF5F0);
+  static const Color paleGreen = Color(0xFFB5D2AD);
+  static const Color paleYellow = Color(0xFFFDFD96);
+  static const Color lightPeach = Color(0xFFF8D6B3);
+  
+  // Accent colors
+  static const Color lightBlue = Color(0xFFB4D6F8);
+  static const Color brightOrange = Color(0xFFFFDB58);
+  static const Color coralRed = Color(0xFFFFA07A);
+  
+  // Standard colors
+  static const Color transparent = Color(0x00ffffff);
+  static const Color white = Color(0xFFF0F0F0);
+  static const Color black = Color(0xFF121212);
+  static const Color offwhite = Color(0xFFF0F4F7);
+}
+```
+
+<Accordion title="Why use a centralized color palette?">
+  Defining all colors in one place ensures visual consistency and makes it easy to rebrand or adjust the color scheme. Components reference `AppColors.primaryPurple` instead of hardcoding color values, making theme changes propagate automatically.
+</Accordion>
+
+## Theme-Aware Components
+
+Components check the current theme and adapt their appearance:
+
+<Tabs>
+  <Tab title="App Bar">
+    ```dart title="lib/presentation/desktopappbar.dart:17-22"
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    final bgColor = isDark ? AppColors.black : AppColors.white;
+    final fgColor = isDark ? AppColors.white : AppColors.black;
+    
+    return AppBar(
+      backgroundColor: bgColor,
+      title: Text(
+        'himanshubalani',
+        style: TextStyle(color: fgColor),
+      ),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: fgColor, width: 2),
+      ),
+    );
+    ```
+  </Tab>
+  
+  <Tab title="Tooltip Styles">
+    ```dart title="lib/consts/style.dart:88-115"
+    class TooltipStyles {
+      static BoxDecoration decoration({required bool isDark}) {
+        return BoxDecoration(
+          color: isDark ? AppColors.black : Colors.white,
+          border: Border.all(
+            color: isDark ? AppColors.brightOrange : AppColors.black,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        );
+      }
+    
+      static TextStyle textStyle({required bool isDark}) {
+        return TextStyle(
+          color: isDark ? AppColors.brightOrange : AppColors.black,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1,
+        );
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Scaffold Background">
+    ```dart title="lib/pages/homepage.dart:62"
+    Scaffold(
+      backgroundColor: isDark 
+        ? AppColors.black 
+        : AppColors.primaryPurple,
+      // ...
+    )
+    ```
+  </Tab>
+  
+  <Tab title="Wave Animation">
+    ```dart title="lib/presentation/hertz_animation.dart:96-97"
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color waveColor = isDark 
+      ? AppColors.offwhite 
+      : AppColors.black;
+    
+    return CustomPaint(
+      painter: SineWavePainter(
+        phase: _animation.value,
+        color: waveColor,
+      ),
+    );
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Check Theme in Build" icon="circle-check">
+    Always read theme inside `build()` method so widgets rebuild when theme changes.
+    
+    ```dart
+    // ✅ Correct
+    @override
+    Widget build(BuildContext context) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      return Container(color: isDark ? Colors.black : Colors.white);
+    }
+    
+    // ❌ Wrong
+    class MyWidget extends StatefulWidget {
+      @override
+      void initState() {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        // Won't update when theme changes!
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Use AppColors" icon="palette">
+    Reference `AppColors` constants instead of hardcoded values for maintainability.
+    
+    ```dart
+    // ✅ Correct
+    color: AppColors.primaryPurple
+    
+    // ❌ Wrong
+    color: Color(0xFF90a8ed)
+    ```
+  </Card>
+  
+  <Card title="Theme Utilities" icon="wrench">
+    Create utility classes like `TooltipStyles` for commonly themed UI patterns.
+  </Card>
+  
+  <Card title="Semantic Naming" icon="tag">
+    Use descriptive color names like `brightOrange` instead of generic names like `accent1`.
+  </Card>
+</CardGroup>
+
+## Customizing Themes
+
+To modify the theme colors:
+
+1. **Update color palette** in `lib/consts/style.dart:129-194`
+2. **Adjust theme configurations** in `lib/main.dart:32-44`
+3. **Test both themes** to ensure contrast and readability
+4. **Verify component adaptations** across app bar, tooltips, backgrounds
+
+<Note>
+  Material 3 provides automatic color adaptations for elevation and states. Test interactive elements (buttons, cards) in both themes to ensure they remain visually distinct.
+</Note>
+
+## Related Files
+
+- `lib/main.dart:30-44` - Theme definitions
+- `lib/widgets/dark_mode_toggle.dart` - Theme toggle widget
+- `lib/consts/style.dart:88-115` - Theme-aware tooltip styles
+- `lib/consts/style.dart:129-194` - Color palette definitions
+- `lib/presentation/desktopappbar.dart:17-22` - App bar theme adaptation
+- `lib/presentation/mobileappbar.dart:16-20` - Mobile app bar theme adaptation

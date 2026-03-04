@@ -1,0 +1,351 @@
+---
+title: "Font Customization"
+description: "Customize typography with Google Fonts integration"
+---
+
+## Overview
+
+The portfolio uses **Google Fonts** with the **Outfit** font family as the primary typeface. Fonts are configured globally in the theme and can be customized throughout the application.
+
+## Primary Font: Outfit
+
+The Outfit font is set as the default font family in `lib/main.dart:35-36`:
+
+```dart
+theme: ThemeData(
+  brightness: Brightness.light,
+  useMaterial3: true,
+  fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+),
+```
+
+### Dark Theme
+
+The same font is used for dark theme at `lib/main.dart:42-43`:
+
+```dart
+darkTheme: ThemeData(
+  brightness: Brightness.dark,
+  useMaterial3: true,
+  fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+),
+```
+
+## Using Google Fonts
+
+The portfolio uses the `google_fonts` package. Import it in your file:
+
+```dart
+import 'package:google_fonts/google_fonts.dart';
+```
+
+## Font Usage Patterns
+
+### Global Theme Font
+
+Set in `main.dart`, applies to all text by default:
+
+```dart
+fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+```
+
+### Text Style with Outfit Font
+
+The `AppStyles` class provides a reusable text style at `lib/consts/style.dart:33-36`:
+
+```dart
+TextStyle outfitTextStyle = TextStyle(
+  fontFamily: GoogleFonts.outfit().fontFamily,
+  fontSize: 30,
+);
+```
+
+### Inline Font Usage
+
+You can apply Google Fonts directly in widgets:
+
+```dart
+Text(
+  'Hello, I am ',
+  style: TextStyle(
+    fontFamily: GoogleFonts.outfit(fontWeight: FontWeight.bold).fontFamily,
+    fontSize: 20.sp,
+  ),
+)
+```
+
+## Secondary Font: Quicksand
+
+The **Quicksand** font is used for specific headings and page labels:
+
+### Projects Page Title
+
+In `lib/pages/projects.dart:178`:
+
+```dart
+Text(
+  'projects',
+  style: TextStyle(
+    fontFamily: GoogleFonts.quicksand(fontWeight: FontWeight.bold).fontFamily,
+    fontSize: 25.w,
+    fontWeight: FontWeight.bold,
+  ),
+)
+```
+
+### About Page Title
+
+In `lib/pages/about.dart:191`:
+
+```dart
+Text(
+  "about",
+  style: TextStyle(
+    fontFamily: GoogleFonts.quicksand(fontWeight: FontWeight.bold).fontFamily,
+    fontSize: 25.w,
+    fontWeight: FontWeight.bold,
+  ),
+)
+```
+
+## Additional Font: Rubik
+
+The **Rubik** font is used for body text in certain sections:
+
+### About Description
+
+In `lib/pages/about.dart:321`:
+
+```dart
+style: TextStyle(
+  fontSize: Get.width <= 900 ? 12.sp : 4.sp,
+  fontWeight: FontWeight.normal,
+  fontFamily: GoogleFonts.rubik().fontFamily,
+  color: Theme.of(context).brightness == Brightness.dark
+      ? Colors.white
+      : Colors.black,
+  height: 1.8,
+)
+```
+
+## Changing the Primary Font
+
+### Step 1: Choose a Google Font
+
+Browse available fonts at [Google Fonts](https://fonts.google.com/)
+
+### Step 2: Update Theme Configuration
+
+Modify `lib/main.dart:35-36` to use your chosen font:
+
+```dart
+theme: ThemeData(
+  brightness: Brightness.light,
+  useMaterial3: true,
+  fontFamily: GoogleFonts.poppins(fontWeight: FontWeight.bold).fontFamily,
+),
+```
+
+### Step 3: Update Dark Theme
+
+Make the same change for dark theme at `lib/main.dart:42-43`:
+
+```dart
+darkTheme: ThemeData(
+  brightness: Brightness.dark,
+  useMaterial3: true,
+  fontFamily: GoogleFonts.poppins(fontWeight: FontWeight.bold).fontFamily,
+),
+```
+
+<Note>
+No additional setup is required! The `google_fonts` package automatically downloads and caches fonts on first use.
+</Note>
+
+## Font in TextStyles Class
+
+The `TextStyles` class at `lib/consts/style.dart:203-206` provides a reusable text style:
+
+```dart
+class TextStyles {
+  TextStyle outfitTextStyle = TextStyle(
+    fontFamily: GoogleFonts.outfit().fontFamily,
+  );
+}
+```
+
+Update this to change the default text style:
+
+```dart
+class TextStyles {
+  TextStyle primaryTextStyle = TextStyle(
+    fontFamily: GoogleFonts.inter().fontFamily,
+  );
+}
+```
+
+## Responsive Font Sizing
+
+The portfolio uses `flutter_screenutil` for responsive font sizes:
+
+```dart
+fontSize: 10.sp,  // Scales with screen size
+```
+
+### Size Modifiers
+
+- `.sp` - Scale based on screen width (recommended for text)
+- `.w` - Scale based on screen width
+- `.h` - Scale based on screen height
+- `.spMin` - Minimum scaled size
+
+### Conditional Sizing
+
+Responsive sizes based on screen width:
+
+```dart
+fontSize: MediaQuery.of(context).size.width <= 900 ? 12.w : 5.w,
+```
+
+Or using GetX:
+
+```dart
+fontSize: Get.width <= 900 ? 12.sp : 4.sp,
+```
+
+## Font Weight Options
+
+Google Fonts supports various weights:
+
+```dart
+GoogleFonts.outfit(fontWeight: FontWeight.w300)  // Light
+GoogleFonts.outfit(fontWeight: FontWeight.w400)  // Regular
+GoogleFonts.outfit(fontWeight: FontWeight.w500)  // Medium
+GoogleFonts.outfit(fontWeight: FontWeight.w600)  // Semi-bold
+GoogleFonts.outfit(fontWeight: FontWeight.w700)  // Bold
+GoogleFonts.outfit(fontWeight: FontWeight.w800)  // Extra-bold
+GoogleFonts.outfit(fontWeight: FontWeight.w900)  // Black
+```
+
+Or use predefined constants:
+
+```dart
+fontWeight: FontWeight.bold    // 700
+fontWeight: FontWeight.normal  // 400
+```
+
+## Common Font Patterns
+
+### Homepage Motto Widget
+
+From `lib/pages/homepage.dart:367-369`:
+
+```dart
+TextStyle mottotextStyle = TextStyle(
+  fontFamily: GoogleFonts.outfit().fontFamily,
+  fontSize: fontsize,
+  fontWeight: FontWeight.bold,
+  color: Theme.of(context).brightness == Brightness.light
+      ? AppColors.black
+      : AppColors.white,
+);
+```
+
+### Project Card Title
+
+From `lib/widgets/projectcard.dart:98-102`:
+
+```dart
+style: AppStyles().outfitTextStyle.copyWith(
+  color: isDark ? AppColors.lightPeach : Colors.black,
+  fontSize: MediaQuery.of(context).size.width <= 900 ? 20.w : 5.w,
+  fontWeight: FontWeight.bold,
+),
+```
+
+## Adding Custom Fonts
+
+While Google Fonts is recommended, you can add custom fonts:
+
+### Step 1: Add Font Files
+
+Place `.ttf` or `.otf` files in `fonts/` directory:
+
+```
+fonts/
+  MyCustomFont-Regular.ttf
+  MyCustomFont-Bold.ttf
+```
+
+### Step 2: Update pubspec.yaml
+
+```yaml
+flutter:
+  fonts:
+    - family: MyCustomFont
+      fonts:
+        - asset: fonts/MyCustomFont-Regular.ttf
+        - asset: fonts/MyCustomFont-Bold.ttf
+          weight: 700
+```
+
+### Step 3: Use Custom Font
+
+```dart
+TextStyle(
+  fontFamily: 'MyCustomFont',
+  fontSize: 20.sp,
+  fontWeight: FontWeight.bold,
+)
+```
+
+<Tip>
+For best results with neobrutalism design, choose fonts that are:
+- **Bold and readable** - Strong letterforms work well
+- **Geometric or grotesque** - Clean, modern sans-serif fonts
+- **High x-height** - Better readability at various sizes
+</Tip>
+
+## Font Recommendations
+
+Popular Google Fonts that work well with neobrutalism design:
+
+1. **Outfit** (current) - Geometric, modern
+2. **Space Grotesk** - Technical, bold
+3. **Manrope** - Friendly, geometric
+4. **Plus Jakarta Sans** - Professional, clean
+5. **Sora** - Modern, tech-focused
+6. **DM Sans** - Versatile, readable
+7. **Inter** - Clean, highly readable
+8. **Poppins** - Geometric, friendly
+
+## Performance Considerations
+
+<Note>
+The `google_fonts` package caches fonts locally after first download, so subsequent loads are fast. For production, consider using `GoogleFonts.config.allowRuntimeFetching = false` and bundling fonts in assets.
+</Note>
+
+## Troubleshooting
+
+### Font Not Loading
+
+Ensure the package is installed in `pubspec.yaml`:
+
+```yaml
+dependencies:
+  google_fonts: ^6.1.0
+```
+
+Run:
+
+```bash
+flutter pub get
+```
+
+### Font Looks Different on Web
+
+Web fonts may render slightly differently. Test on actual web browsers during development.
+
+### Font Weight Not Showing
+
+Some fonts don't support all weights. Check the font's available weights on Google Fonts.

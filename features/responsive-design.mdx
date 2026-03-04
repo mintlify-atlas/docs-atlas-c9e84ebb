@@ -1,0 +1,224 @@
+---
+title: Responsive Design
+description: Adaptive layouts that work seamlessly across mobile and desktop devices
+---
+
+The portfolio implements a **breakpoint-based responsive design system** using `LayoutBuilder` and `flutter_screenutil` for consistent scaling across all device sizes.
+
+## Responsive Strategy
+
+The app uses a 700px breakpoint to switch between mobile and desktop layouts:
+
+```dart title="lib/pages/homepage.dart:64-71"
+body: LayoutBuilder(
+  builder: (BuildContext context, BoxConstraints constraints) {
+    if (constraints.maxWidth > 700) {
+      return desktopHomepage();
+    } else {
+      return mobileHomepage();
+    }
+  }
+)
+```
+
+<Note>
+  The **700px breakpoint** balances tablet and small desktop experiences. Devices above this width get the full desktop layout with expanded navigation and multi-column content.
+</Note>
+
+## Screen Utilities Setup
+
+The app uses `flutter_screenutil` for proportional sizing across different screen dimensions:
+
+```dart title="lib/main.dart:20-24"
+return ScreenUtilInit(
+  designSize: ScreenUtil.defaultSize,
+  minTextAdapt: true,
+  splitScreenMode: true,
+  builder: (context, _) {
+    return GetMaterialApp(...);
+  },
+);
+```
+
+### Key Features
+
+- **`minTextAdapt: true`** - Ensures text remains readable on small screens
+- **`splitScreenMode: true`** - Handles multi-window scenarios on tablets and foldables
+- **`designSize: ScreenUtil.defaultSize`** - Uses default 360x690 design reference
+
+## Responsive Components
+
+<Tabs>
+  <Tab title="App Bar">
+    Different navigation experiences for mobile vs desktop:
+    
+    ```dart title="lib/utils/appbar.dart"
+    class Appbar extends StatelessWidget implements PreferredSizeWidget {
+      const Appbar({super.key});
+    
+      @override
+      Size get preferredSize => const Size.fromHeight(60);
+    
+      @override
+      Widget build(BuildContext context) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 700) {
+              return const DesktopAppbar();
+            } else {
+              return const MobileAppbar();
+            }
+          },
+        );
+      }
+    }
+    ```
+    
+    **Desktop:** Full horizontal navigation with visible links  
+    **Mobile:** Hamburger menu with popup navigation
+  </Tab>
+  
+  <Tab title="Homepage Layout">
+    Content adapts to available screen space:
+    
+    ```dart title="lib/pages/homepage.dart:145-156,239-247"
+    // Desktop: More pills, larger spacing
+    Widget desktopHomepage() {
+      return Stack(
+        children: [
+          const AnimatedPillsBackground(
+            rows: 10,
+            columns: 24,  // Wide grid for desktop
+            color: AppColors.discord,
+            duration: Duration(seconds: 4),
+          ),
+          // ... content
+        ],
+      );
+    }
+    
+    // Mobile: Fewer pills, compact layout
+    Widget mobileHomepage() {
+      return Stack(
+        children: [
+          const AnimatedPillsBackground(
+            rows: 10,
+            columns: 8,   // Narrow grid for mobile
+            color: AppColors.discord,
+            duration: Duration(seconds: 4),
+          ),
+          // ... content
+        ],
+      );
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Typography">
+    Proportional text sizing using `.sp` extension:
+    
+    ```dart title="lib/pages/homepage.dart:186,263"
+    // Desktop
+    Text(
+      'I am ',
+      style: TextStyle(
+        fontSize: 10.sp,  // Scales with screen width
+        fontWeight: FontWeight.bold,
+      ),
+    )
+    
+    // Mobile
+    Text(
+      'Hello, I am ',
+      style: TextStyle(
+        fontSize: 20.sp,  // Larger relative size on mobile
+        fontWeight: FontWeight.bold,
+      ),
+    )
+    ```
+    
+    **`.sp`** - Scales proportionally to screen width  
+    **`.w`** - Width relative to screen width  
+    **`.h`** - Height relative to screen height
+  </Tab>
+</Tabs>
+
+## Responsive Background Animation
+
+The `AnimatedPillsBackground` widget automatically calculates optimal grid dimensions:
+
+```dart title="lib/widgets/animated_pill_bg.dart:62-80"
+void _initializePills(Size size) {
+  if (_lastSize == size && _pills != null) return;
+  _lastSize = size;
+
+  // Calculate optimal grid dimensions based on screen size
+  final rows = widget.rows ?? _calculateRows(size);
+  final columns = widget.columns ?? _calculateColumns(size);
+
+  _pills = List.generate(rows * columns, (index) {
+    final baseHeight = 5.0 + _random.nextDouble() * 15;
+    final delay = _random.nextDouble() * 2 * pi;
+    return _Pill(baseHeight, delay);
+  });
+}
+
+int _calculateRows(Size size) {
+  return max(6, (size.height / 70).round());  // ~60-80px per row
+}
+
+int _calculateColumns(Size size) {
+  return max(10, (size.width / 70).round()); // ~60-80px per column
+}
+```
+
+<Accordion title="Why auto-calculate dimensions?">
+  Automatically calculating grid dimensions ensures the animated background looks balanced on any screen size without manual configuration. The algorithm aims for 60-80px cells, creating a consistent visual density whether on mobile portrait, tablet landscape, or ultra-wide desktop displays.
+</Accordion>
+
+## Responsive Patterns
+
+<CardGroup cols={2}>
+  <Card title="Mobile-First Content" icon="mobile-screen">
+    Critical information appears first in mobile layouts, with progressive enhancement for larger screens.
+  </Card>
+  
+  <Card title="Flexible Grids" icon="grip">
+    Background animations and component layouts adapt their density based on available space.
+  </Card>
+  
+  <Card title="Proportional Sizing" icon="maximize">
+    All dimensions use `.sp`, `.w`, and `.h` extensions to scale naturally across devices.
+  </Card>
+  
+  <Card title="Breakpoint Testing" icon="tablet-screen-button">
+    Use `LayoutBuilder` with `constraints.maxWidth` to detect and respond to screen size changes.
+  </Card>
+</CardGroup>
+
+## Testing Responsive Layouts
+
+To test responsive behavior during development:
+
+```bash
+# Run in Chrome with responsive design mode
+flutter run -d chrome
+
+# Test specific dimensions
+flutter run -d chrome --web-browser-flag="--window-size=375,812"  # iPhone
+flutter run -d chrome --web-browser-flag="--window-size=1920,1080" # Desktop
+```
+
+<Note>
+  Use Chrome DevTools responsive design mode to quickly test various breakpoints without restarting the app.
+</Note>
+
+## Related Files
+
+- `lib/main.dart:20-24` - ScreenUtil initialization
+- `lib/utils/appbar.dart` - Responsive app bar wrapper
+- `lib/presentation/desktopappbar.dart` - Desktop navigation implementation
+- `lib/presentation/mobileappbar.dart` - Mobile navigation implementation  
+- `lib/pages/homepage.dart:64-71` - Layout breakpoint logic
+- `lib/pages/homepage.dart:145-237,239-288` - Desktop vs mobile layouts
+- `lib/widgets/animated_pill_bg.dart:62-80` - Dynamic grid calculation

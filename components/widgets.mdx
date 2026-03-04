@@ -1,0 +1,626 @@
+---
+title: 'Widget Documentation'
+description: 'Detailed API reference for display and interactive widgets'
+---
+
+## Display Widgets
+
+### ProjectCard
+
+A comprehensive card component for showcasing projects with images, descriptions, tech stacks, and action buttons.
+
+**Location**: `lib/widgets/projectcard.dart:10`
+
+#### Properties
+
+<ParamField path="projectName" type="String" required>
+  The name of the project displayed in the header
+</ParamField>
+
+<ParamField path="projectDescription" type="String" required>
+  A brief description of the project (max 3 lines with ellipsis)
+</ParamField>
+
+<ParamField path="imagePath" type="String" required>
+  Asset path to the project preview image
+</ParamField>
+
+<ParamField path="projectLink" type="String" required>
+  URL to launch when the button is clicked
+</ParamField>
+
+<ParamField path="languages" type="List<String>" required>
+  List of technologies used in the project
+</ParamField>
+
+<ParamField path="buttonText" type="String" required>
+  Text displayed on the call-to-action button
+</ParamField>
+
+<ParamField path="projectLogo" type="String?">
+  Optional logo displayed next to the project name
+</ParamField>
+
+#### Usage
+
+```dart
+ProjectCard(
+  projectName: 'Flutter Portfolio',
+  projectDescription: 'A responsive portfolio website with neobrutalism design'
+    ' showcasing projects and skills.',
+  imagePath: 'assets/images/portfolio.png',
+  projectLink: 'https://github.com/username/portfolio',
+  languages: ['Flutter', 'Dart', 'Firebase'],
+  projectLogo: 'assets/images/flutter_logo.png',
+  buttonText: 'View on GitHub',
+)
+```
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - White background
+    - Black borders (3px)
+    - Black shadow with 3px offset
+    - Black text
+  </Tab>
+  <Tab title="Dark Mode">
+    - Black background (`#121212`)
+    - Light peach borders (`#F8D6B3`)
+    - Light peach shadow with 3px offset
+    - Light peach text
+  </Tab>
+</Tabs>
+
+#### Structure
+
+The component consists of four main sections:
+
+1. **Image Section**: Full-width project preview (150px height)
+2. **Header Section**: Project name and optional logo
+3. **Description Section**: Multi-line text with ellipsis
+4. **Tech Stack Section**: Wrapped `LanguageBox` components
+5. **Button Section**: Clickable CTA with hover effects
+
+---
+
+### LanguageBox
+
+A pill-shaped tag component for displaying technology names with color-coded themes.
+
+**Location**: `lib/widgets/languagebox.dart:5`
+
+#### Properties
+
+<ParamField path="text" type="String" required>
+  The technology or tag name to display
+</ParamField>
+
+<ParamField path="fontsize" type="double" required>
+  Font size for the text
+</ParamField>
+
+<ParamField path="darkModecolor" type="Color?">
+  Optional custom color for dark mode
+</ParamField>
+
+#### Usage
+
+```dart
+LanguageBox(
+  text: 'Flutter',
+  fontsize: 12.0,
+)
+```
+
+#### Color Mapping
+
+The widget includes a built-in color map for popular technologies:
+
+```dart
+"Python" → #FFE873 (Yellow)
+"Dart" → #1CDAC5 (Teal)
+"Flutter" → #F2F2F2 (Light Gray)
+"JavaScript" → #E9D44D (Yellow)
+"Firebase" → #F6820D (Orange)
+"Figma" → #A259FF (Purple)
+"Git" → #FA5E3C (Red)
+// ... and 20+ more
+```
+
+**Location**: `lib/widgets/languagebox.dart:48`
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - Colored background (from color map)
+    - Black border (3px)
+    - Black text
+  </Tab>
+  <Tab title="Dark Mode">
+    - Transparent background
+    - Colored border (from color map)
+    - Colored text
+  </Tab>
+</Tabs>
+
+---
+
+### ProfileImage
+
+A polaroid-style photo frame with rotation and optional glow effects.
+
+**Location**: `lib/widgets/profileimage.dart:5`
+
+#### Usage
+
+```dart
+ProfileImage()
+```
+
+This widget has no configurable properties. It displays a fixed asset image.
+
+#### Features
+
+- **Rotation**: -0.06 radians tilt for polaroid effect
+- **Responsive Sizing**: Width adapts to screen size (15% of width, clamped 200-280px)
+- **Aspect Ratio**: 1:1.2 (width:height)
+- **Padding**: Thicker bottom padding simulating polaroid style
+- **Dark Mode Glow**: Three-layer shadow effect with seafoam green color
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - Off-white background (`#F0F4F7`)
+    - Black border (3px)
+    - No shadow
+  </Tab>
+  <Tab title="Dark Mode">
+    - Black background (`#121212`)
+    - Seafoam green border (`#8ADEEF`)
+    - Triple-layer glow effect:
+      - Inner: 12px blur, alpha 0.9
+      - Middle: 30px blur, alpha 0.5
+      - Outer: 60px blur, alpha 0.25
+  </Tab>
+</Tabs>
+
+---
+
+### LinkCard
+
+A card component for displaying external links with images, icons, and platform information.
+
+**Location**: `lib/widgets/linkcard.dart:8`
+
+#### Properties
+
+<ParamField path="vlink" type="String" required>
+  URL to open when the card is clicked
+</ParamField>
+
+<ParamField path="imageUrl" type="String" required>
+  Network URL of the image to display
+</ParamField>
+
+<ParamField path="vtext" type="String" required>
+  Link description text
+</ParamField>
+
+<ParamField path="vicon" type="dynamic" required>
+  Icon to display (IconData or String asset path)
+</ParamField>
+
+<ParamField path="vframecolor" type="Color" required>
+  Frame background color
+</ParamField>
+
+<ParamField path="wide" type="bool" required>
+  Layout orientation (true = wide, false = tall)
+</ParamField>
+
+#### Usage
+
+```dart
+LinkCard(
+  vlink: 'https://example.com',
+  imageUrl: 'https://example.com/image.jpg',
+  vtext: 'Example Website',
+  vicon: FontAwesomeIcons.link,
+  vframecolor: AppColors.lightBlue,
+  wide: true,
+)
+```
+
+#### Features
+
+- **Responsive Sizing**: Uses `ScreenUtil` for consistent dimensions
+- **Loading States**: Shows circular progress indicator while loading
+- **Error Handling**: Displays fallback icon if image fails to load
+- **Positioned Badge**: Social link button overlaid at top-left
+- **Dark Mode Glow**: Triple-layer shadow effect matching border color
+
+---
+
+## Interactive Widgets
+
+### SocialBox
+
+A vertical stack of social media link buttons.
+
+**Location**: `lib/widgets/socialbox.dart:13`
+
+#### Usage
+
+```dart
+SocialBox()
+```
+
+This widget has no configurable properties. It displays a predefined list of social links.
+
+#### Included Platforms
+
+- Email
+- GitHub
+- Peerlist
+- LinkedIn
+- X (Twitter)
+- Discord
+- Instagram
+- Letterboxd
+
+---
+
+### SocialLinkButton
+
+A single social media link button with icon, text, and hover effects.
+
+**Location**: `lib/widgets/socialbox.dart:99`
+
+#### Properties
+
+<ParamField path="link" type="String" required>
+  URL to open when clicked
+</ParamField>
+
+<ParamField path="icon" type="dynamic" required>
+  Icon (IconData or String asset path)
+</ParamField>
+
+<ParamField path="pfname" type="String" required>
+  Display text (typically username or profile URL)
+</ParamField>
+
+<ParamField path="pfcolor" type="Color" required>
+  Platform's brand color
+</ParamField>
+
+<ParamField path="vmainaxissize" type="MainAxisSize" required>
+  Main axis size (max or min)
+</ParamField>
+
+#### Usage
+
+```dart
+SocialLinkButton(
+  link: 'https://github.com/username',
+  icon: FontAwesomeIcons.github,
+  pfname: 'github.com/username',
+  pfcolor: AppColors.github,
+  vmainaxissize: MainAxisSize.max,
+)
+```
+
+#### Hover Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - Background stays colored
+    - Lifts up 10px on hover
+  </Tab>
+  <Tab title="Dark Mode">
+    - Background black by default
+    - Fills with platform color on hover
+    - Lifts up 10px on hover
+  </Tab>
+</Tabs>
+
+---
+
+### WorkTimeline
+
+A vertical timeline component displaying work experience entries.
+
+**Location**: `lib/widgets/worktimeline.dart:122`
+
+#### Usage
+
+```dart
+WorkTimeline()
+```
+
+This widget has no configurable properties. It uses the `timeline_list` package.
+
+#### Features
+
+- **Timeline Position**: Start (left side)
+- **Icon Size**: 30px circular containers
+- **Icon Gap**: 12px between dot and card
+- **Line Color**: White (dark mode) / Black (light mode)
+- **Custom Icons**: Each entry has a unique icon
+
+---
+
+### WorkExpContainer
+
+An individual work experience card used within the timeline.
+
+**Location**: `lib/widgets/worktimeline.dart:8`
+
+#### Properties
+
+<ParamField path="companyname" type="String" required>
+  Company or organization name
+</ParamField>
+
+<ParamField path="role" type="String" required>
+  Job title or role
+</ParamField>
+
+<ParamField path="duration" type="String" required>
+  Time period (e.g., "Jan 2023 - Mar 2023")
+</ParamField>
+
+<ParamField path="techstack" type="String" required>
+  Technologies used during the role
+</ParamField>
+
+<ParamField path="color" type="Color" required>
+  Card accent color
+</ParamField>
+
+<ParamField path="width" type="double?">
+  Optional fixed width
+</ParamField>
+
+<ParamField path="onTap" type="VoidCallback?">
+  Optional tap handler
+</ParamField>
+
+#### Usage
+
+```dart
+WorkExpContainer(
+  companyname: 'Tech Company',
+  role: 'Flutter Developer',
+  duration: 'Jan 2023 - Present',
+  techstack: 'Tech Stack: Flutter, Firebase, REST APIs',
+  color: AppColors.lightBlue,
+  onTap: () => launchUrlString('https://company.com'),
+)
+```
+
+---
+
+### SkillsBento
+
+A bento-style grid layout showcasing skills organized by category.
+
+**Location**: `lib/widgets/skillsbento.dart:9`
+
+#### Usage
+
+```dart
+SkillsBento()
+```
+
+This widget has no configurable properties. Skills are hardcoded in five categories:
+
+- **Languages**: Python, Dart, HTML, CSS, JavaScript, C++
+- **Frameworks**: Flutter, Express.js
+- **Cloud**: Google Cloud, Firebase
+- **Design Tools**: Figma, Adobe Illustrator
+- **Other**: Git, Rest APIs, Markdown
+
+#### Structure
+
+1. **Header Box**: "skills" title with decorative circle
+2. **Section Boxes**: Five bordered sections with category labels
+3. **Language Tags**: Each technology shown as a `LanguageBox`
+
+---
+
+## Animation Widgets
+
+### AnimatedPillsBackground
+
+An animated background featuring breathing pill shapes arranged in a grid.
+
+**Location**: `lib/widgets/animated_pill_bg.dart:4`
+
+#### Properties
+
+<ParamField path="rows" type="int?">
+  Number of pill rows (auto-calculated if null)
+</ParamField>
+
+<ParamField path="columns" type="int?">
+  Number of pill columns (auto-calculated if null)
+</ParamField>
+
+<ParamField path="color" type="Color" default="Colors.blueGrey">
+  Base color of the pills
+</ParamField>
+
+<ParamField path="duration" type="Duration" default="Duration(seconds: 5)">
+  Animation cycle duration (breathing speed)
+</ParamField>
+
+<ParamField path="pillAspectRatio" type="double" default="0.15">
+  Pill width relative to cell width
+</ParamField>
+
+#### Usage
+
+```dart
+AnimatedPillsBackground(
+  color: AppColors.primaryPurple,
+  duration: Duration(seconds: 8),
+  pillAspectRatio: 0.2,
+)
+```
+
+#### Features
+
+- **Auto-sizing**: Calculates optimal grid based on screen dimensions
+- **Staggered Animation**: Each pill has random delay and base height
+- **Breathing Effect**: Pills expand/contract with sine wave animation
+- **Opacity Animation**: Fades between 0.1 and 0.5 opacity
+- **Offset Grid**: Alternate rows/columns are displaced for visual interest
+
+#### Animation Details
+
+- **Height Range**: 5-20px base + 0-20px animation
+- **Curve**: `Curves.easeInOut`
+- **Direction**: Repeat with reverse
+- **Grid Spacing**: ~60-80px per cell
+
+---
+
+## Utility Widgets
+
+### OnHover
+
+A builder widget that provides hover state and lift animation.
+
+**Location**: `lib/presentation/onhover.dart:2`
+
+#### Properties
+
+<ParamField path="builder" type="Widget Function(bool isHovered)" required>
+  Builder function receiving hover state
+</ParamField>
+
+#### Usage
+
+```dart
+OnHover(
+  builder: (bool isHovered) {
+    return Container(
+      color: isHovered ? Colors.blue : Colors.grey,
+      child: Text('Hover me'),
+    );
+  },
+)
+```
+
+#### Behavior
+
+- **Mouse Enter**: Sets `isHovered` to `true`, lifts element 10px up
+- **Mouse Exit**: Sets `isHovered` to `false`, returns to original position
+- **Animation**: 200ms duration with implicit animation
+- **Transform**: `Matrix4.identity()..translate(0, -10, 0)`
+
+---
+
+### BoxCircles
+
+Decorative circular indicators used in component headers.
+
+**Location**: `lib/widgets/neobrutalbox.dart:112`
+
+#### Properties
+
+<ParamField path="hoverEnabled" type="bool" default="true">
+  Whether to wrap in OnHover widget
+</ParamField>
+
+<ParamField path="color" type="Color?">
+  Circle fill color (defaults to theme-aware color)
+</ParamField>
+
+#### Usage
+
+```dart
+BoxCircles(
+  hoverEnabled: true,
+  color: AppColors.lightPeach,
+)
+```
+
+#### Theme Behavior
+
+<Tabs>
+  <Tab title="Light Mode">
+    - White fill with 65% opacity
+    - Black border (2px)
+  </Tab>
+  <Tab title="Dark Mode">
+    - Black fill with 25% opacity
+    - Border color matches provided color
+  </Tab>
+</Tabs>
+
+#### Dimensions
+
+- **Size**: 20x20px
+- **Shape**: Circle
+- **Margin**: 2px left spacing
+- **Border**: 2px solid
+
+---
+
+## Best Practices
+
+### Responsive Sizing
+
+Always use conditional sizing based on screen width:
+
+```dart
+fontSize: MediaQuery.of(context).size.width <= 900 ? 12.w : 4.w
+width: pageWidth <= 900 ? 300.w : pageWidth / 3.5
+```
+
+### Theme Awareness
+
+Check theme brightness at build time:
+
+```dart
+final bool isDark = Theme.of(context).brightness == Brightness.dark;
+final Color bgColor = isDark ? AppColors.black : AppColors.white;
+```
+
+### Asset Optimization
+
+Use cache dimensions for images:
+
+```dart
+Image.asset(
+  imagePath,
+  height: 150,
+  cacheHeight: 360, // 2-3x the display size
+)
+```
+
+### URL Handling
+
+Always parse URLs before launching:
+
+```dart
+final Uri toLaunch = Uri.parse(projectLink);
+await launchUrl(toLaunch);
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Neobrutalism Design" icon="palette" href="/components/neobrutalism">
+    Understand the design system
+  </Card>
+  <Card title="Layout Components" icon="table-cells" href="/components/layout">
+    Learn about containers and boxes
+  </Card>
+</CardGroup>

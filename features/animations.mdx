@@ -1,0 +1,399 @@
+---
+title: Animations
+description: Smooth transitions, hover effects, and animated backgrounds
+---
+
+The portfolio features a rich set of **custom animations** that bring the neobrutalism design to life, including animated backgrounds, hover effects, and smooth transitions.
+
+## Animated Pills Background
+
+The signature animated background consists of breathing pill shapes arranged in a dynamic grid:
+
+```dart title="lib/widgets/animated_pill_bg.dart:4-32"
+class AnimatedPillsBackground extends StatefulWidget {
+  const AnimatedPillsBackground({
+    super.key,
+    this.rows,
+    this.columns,
+    this.color = Colors.blueGrey,
+    this.duration = const Duration(seconds: 5),
+    this.pillAspectRatio = 0.15,
+  });
+
+  /// Number of rows of pills (auto-calculated if null)
+  final int? rows;
+
+  /// Number of columns of pills (auto-calculated if null)
+  final int? columns;
+
+  /// Base color of pills
+  final Color color;
+
+  /// Animation duration (controls breathing speed)
+  final Duration duration;
+
+  /// Aspect ratio for pill width relative to cell width
+  final double pillAspectRatio;
+}
+```
+
+### Implementation Details
+
+<Tabs>
+  <Tab title="Animation Controller">
+    ```dart title="lib/widgets/animated_pill_bg.dart:42-49"
+    @override
+    void initState() {
+      super.initState();
+    
+      _controller = AnimationController(
+        vsync: this,
+        duration: widget.duration,
+      )..repeat(reverse: true);  // Infinite breathing effect
+    }
+    ```
+    
+    The controller repeats with reversal, creating a smooth breathing effect.
+  </Tab>
+  
+  <Tab title="Pill Generation">
+    ```dart title="lib/widgets/animated_pill_bg.dart:65-69"
+    _pills = List.generate(rows * columns, (index) {
+      final baseHeight = 5.0 + _random.nextDouble() * 15;
+      final delay = _random.nextDouble() * 2 * pi;
+      return _Pill(baseHeight, delay);
+    });
+    ```
+    
+    Each pill gets a random base height and phase delay for organic movement.
+  </Tab>
+  
+  <Tab title="Animation Functions">
+    ```dart title="lib/widgets/animated_pill_bg.dart:82-92"
+    double _animatedHeight(_Pill pill, double t, double baseScale) {
+      final anim = sin((t * 2 * pi) + pill.delay);
+      final normalized = (anim + 1) / 2;  // Convert [-1,1] to [0,1]
+      return (pill.baseHeight * baseScale) + normalized * (20 * baseScale);
+    }
+    
+    double _animatedOpacity(_Pill pill, double t) {
+      final anim = sin((t * 2 * pi) + pill.delay);
+      final normalized = (anim + 1) / 2;
+      return 0.1 + normalized * 0.4;  // Range: 0.1 to 0.5
+    }
+    ```
+    
+    Sine wave functions create smooth, organic breathing patterns.
+  </Tab>
+  
+  <Tab title="Custom Painter">
+    ```dart title="lib/widgets/animated_pill_bg.dart:171-200"
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < columns; col++) {
+        final index = row * columns + col;
+        final pill = pills[index];
+        
+        final baseCx = (col + 1) * cellWidth;
+        final baseCy = (row + 1) * cellHeight;
+        final h = heightFn(pill, time);
+        final opacity = opacityFn(pill, time);
+        
+        // Horizontally displace alternate rows
+        final cx = baseCx + ((row % 2 == 1) ? (cellWidth * 0.5) : 0);
+        // Vertically displace alternate columns
+        final cy = baseCy + ((col % 2 == 1) ? (h * 0.5) : 0);
+        
+        paint.color = color.withValues(alpha: opacity);
+        
+        final rect = RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset(cx, cy), width: h, height: pillWidth),
+          Radius.circular(cornerRadius),
+        );
+        canvas.drawRRect(rect, paint);
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  The **staggered grid layout** (alternating row/column offsets) combined with per-pill phase delays creates a mesmerizing, organic wave effect across the entire background.
+</Note>
+
+## Hover Effects
+
+The `OnHover` widget provides smooth transform animations on mouse enter/exit:
+
+```dart title="lib/presentation/onhover.dart"
+class OnHover extends StatefulWidget {
+  final Widget Function(bool isHovered) builder;
+  const OnHover({super.key, required this.builder});
+}
+
+class OnHoverState extends State<OnHover> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final hovered = Matrix4.identity()..translate(0, -10.0, 0);
+    final transform = isHovered ? hovered : Matrix4.identity();
+
+    return MouseRegion(
+      onEnter: (_) => onEntered(true),
+      onExit: (_) => onEntered(false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: transform,
+        child: widget.builder(isHovered),
+      ),
+    );
+  }
+
+  void onEntered(bool isHovered) {
+    setState(() {
+      this.isHovered = isHovered;
+    });
+  }
+}
+```
+
+### Usage Example
+
+```dart title="lib/pages/homepage.dart:331-349"
+OnHover(
+  builder: (bool isHovered) {
+    return IconButton(
+      tooltip: social['tooltip'] as String?,
+      style: AppStyles().socialIconStyle.copyWith(
+        backgroundColor: WidgetStateProperty.all<Color>(
+          social['color'] as Color
+        ),
+      ),
+      icon: Icon(
+        social['icon'] as IconData,
+        color: Colors.white,
+        size: 15.w.clamp(18, 24),
+      ),
+      onPressed: () => launchUrlString(social['url']! as String),
+    );
+  },
+)
+```
+
+The button lifts up by 10 pixels on hover, creating a subtle 3D effect.
+
+## Sine Wave Animation
+
+The `SineWaveAnimation` creates a sophisticated hover effect with wave patterns and text fading:
+
+```dart title="lib/presentation/hertz_animation.dart:7-26"
+class SineWaveAnimation extends StatefulWidget {
+  final Widget child;
+  final Duration duration;
+
+  const SineWaveAnimation({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 200),
+  });
+}
+
+class _SineWaveAnimationState extends State<SineWaveAnimation>
+    with SingleTickerProviderStateMixin {
+  Timer? _hoverTimer;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  late Animation<double> _opacityAnimation;
+  late Animation<double> _waveOpacityAnimation;
+}
+```
+
+### Animation Sequences
+
+<Tabs>
+  <Tab title="Text Opacity">
+    ```dart title="lib/presentation/hertz_animation.dart:47-62"
+    _opacityAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeInOutCubic)),
+        weight: 10.0,  // Fade out: 10% of duration
+      ),
+      TweenSequenceItem(
+        tween: ConstantTween<double>(0.0),
+        weight: 80.0,  // Hidden: 80% of duration
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOutCubic)),
+        weight: 10.0,  // Fade in: 10% of duration
+      ),
+    ]).animate(_controller);
+    ```
+  </Tab>
+  
+  <Tab title="Wave Opacity">
+    ```dart title="lib/presentation/hertz_animation.dart:65-80"
+    _waveOpacityAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOutCubic)),
+        weight: 20.0,  // Fade in: 20% of duration
+      ),
+      TweenSequenceItem(
+        tween: ConstantTween<double>(1.0),
+        weight: 60.0,  // Visible: 60% of duration
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 20.0,  // Fade out: 20% of duration
+      ),
+    ]).animate(_controller);
+    ```
+  </Tab>
+  
+  <Tab title="Hover Delay">
+    ```dart title="lib/presentation/hertz_animation.dart:99-109"
+    return MouseRegion(
+      onEnter: (_) {
+        // Start a 500ms delay before playing animation
+        _hoverTimer = Timer(const Duration(milliseconds: 500), () {
+          if (mounted) playAnimation();
+        });
+      },
+      onExit: (_) {
+        // Cancel the timer if the user leaves early
+        _hoverTimer?.cancel();
+      },
+      child: ...,
+    );
+    ```
+    
+    The 500ms delay prevents accidental triggers from quick mouse movements.
+  </Tab>
+  
+  <Tab title="Wave Painting">
+    ```dart title="lib/presentation/hertz_animation.dart:166-181"
+    // Draw the sine wave
+    final path = Path();
+    final amplitude = size.height / 2.8;
+    const frequency = 2.8;
+    final centerY = size.height / 2;
+    
+    path.moveTo(0, centerY + amplitude * math.sin(-phase));
+    
+    for (double x = 0; x <= size.width; x += 1) {
+      final y = centerY +
+          amplitude *
+              math.sin((x / size.width) * frequency * 2 * math.pi - phase);
+      path.lineTo(x, y);
+    }
+    
+    canvas.drawPath(path, paint);
+    ```
+  </Tab>
+</Tabs>
+
+<Accordion title="How the sine wave animation works">
+  1. User hovers for 500ms
+  2. Text fades out (10% of animation)
+  3. Wave fades in while animating (20% of animation)
+  4. Wave continues animating at full opacity (60% of animation)
+  5. Wave fades out (20% of animation)
+  6. Text fades back in (10% of animation)
+  
+  The result is a smooth, professional effect where the text briefly disappears while a sine wave animates through it, then the text returns.
+</Accordion>
+
+## Pulsing Animation
+
+A simple scale animation for drawing attention to elements:
+
+```dart title="lib/presentation/pulsingwrapper.dart:16-35"
+class _PulsingWrapperState extends State<_PulsingWrapper> 
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: widget.duration,
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: widget.maxScale,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+}
+```
+
+## Animation Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Tickers Wisely" icon="clock">
+    Always mix in `SingleTickerProviderStateMixin` when creating custom animations with `AnimationController`.
+  </Card>
+  
+  <Card title="Dispose Controllers" icon="trash">
+    Always call `_controller.dispose()` in the `dispose()` method to prevent memory leaks.
+    
+    ```dart
+    @override
+    void dispose() {
+      _controller.dispose();
+      super.dispose();
+    }
+    ```
+  </Card>
+  
+  <Card title="Optimize with RepaintBoundary" icon="paintbrush">
+    Wrap frequently animating widgets in `RepaintBoundary` to isolate repaints.
+    
+    ```dart
+    RepaintBoundary(
+      child: AnimatedWidget(...),
+    )
+    ```
+  </Card>
+  
+  <Card title="Use Curves" icon="bezier-curve">
+    Apply easing curves for more natural motion:
+    
+    ```dart
+    CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOutCubic,
+    )
+    ```
+  </Card>
+</CardGroup>
+
+## Performance Considerations
+
+<Note>
+  The animated pills background uses a `CustomPainter` which is highly efficient for drawing many shapes. The `shouldRepaint` method returns `true` because the animation is continuous, but Flutter's rendering pipeline only repaints when the frame changes.
+</Note>
+
+### Optimization Techniques Used
+
+1. **CustomPainter for backgrounds** - More efficient than individual widgets
+2. **RepaintBoundary isolation** - Prevents unnecessary repaints of static content
+3. **AnimatedBuilder** - Only rebuilds animated portions of the widget tree
+4. **Hover delays** - Prevents animation spam from mouse movements
+5. **ValueKey for AnimatedSwitcher** - Ensures smooth icon transitions in theme toggle
+
+## Related Files
+
+- `lib/widgets/animated_pill_bg.dart` - Animated pills background
+- `lib/presentation/onhover.dart` - Hover lift effect
+- `lib/presentation/hertz_animation.dart` - Sine wave hover animation
+- `lib/presentation/pulsingwrapper.dart` - Pulsing scale animation
+- `lib/widgets/dark_mode_toggle.dart:23-45` - Theme toggle animation

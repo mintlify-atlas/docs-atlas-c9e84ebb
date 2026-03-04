@@ -1,0 +1,164 @@
+---
+title: "Introduction"
+description: "Learn about the Flutter portfolio template and its key features"
+---
+
+## Welcome to Portfolio
+
+This Flutter web portfolio is a modern, responsive template designed to help developers showcase their work, skills, and experience with style. Built with Flutter and Dart, it features a distinctive **neobrutalism design** with bold colors, thick borders, and vibrant shadows that make your content stand out.
+
+## What is this portfolio?
+
+This is a production-ready Flutter web application that serves as a personal portfolio website. It's the same portfolio used by [Himanshu Balani](https://github.com/himanshubalani) and has been open-sourced for developers to use and customize.
+
+<Note>
+This portfolio is optimized for web deployment and works on all modern browsers. It's fully responsive and provides an excellent experience on both desktop and mobile devices.
+</Note>
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Neobrutalism Design" icon="paintbrush">
+    Bold, modern aesthetic with thick borders, vibrant shadows, and high-contrast colors
+  </Card>
+  <Card title="Fully Responsive" icon="mobile-screen">
+    Optimized layouts for mobile, tablet, and desktop with adaptive components
+  </Card>
+  <Card title="Theme Support" icon="moon">
+    Built-in dark and light themes using Material 3 design system
+  </Card>
+  <Card title="Custom Widgets" icon="cube">
+    Reusable components including project cards, skill boxes, and work timelines
+  </Card>
+  <Card title="Smooth Animations" icon="sparkles">
+    Animated backgrounds, hover effects, and page transitions for a polished feel
+  </Card>
+  <Card title="Keyboard Navigation" icon="keyboard">
+    Keyboard shortcuts for accessibility and power users
+  </Card>
+</CardGroup>
+
+## Technology Stack
+
+This portfolio is built with modern Flutter technologies:
+
+- **Flutter 3.38.5** - Cross-platform UI framework
+- **Dart 3.10.4** - Programming language
+- **Material 3** - Design system for theming
+- **GetX 4.6.6** - State management and routing
+- **Google Fonts** - Typography (Outfit, Quicksand, Rubik)
+- **flutter_screenutil** - Responsive sizing
+- **flutter_animate** - Animation utilities
+- **url_launcher** - External link handling
+
+<Accordion title="View all dependencies">
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_fonts: ^6.3.3
+  url_launcher: ^6.1.11
+  flutter_screenutil: ^5.7.0
+  flutter_staggered_grid_view: ^0.7.0
+  get: ^4.6.6
+  font_awesome_flutter: ^10.7.0
+  timeline_list: 0.1.1
+  rename: ^3.0.1
+  flutter_animate: ^4.5.0
+  simple_icons: ^14.6.1
+  auto_size_text: ^3.0.0
+  provider: ^6.1.2
+  flutter_svg: ^2.2.3
+```
+</Accordion>
+
+## Project Structure
+
+The portfolio follows a clean, organized structure:
+
+```
+portfolio_source/
+├── lib/
+│   ├── consts/           # Style constants and color palette
+│   ├── pages/            # Main pages (home, about, projects, contact)
+│   ├── presentation/     # Presentation layer components
+│   ├── utils/            # Utility functions and helpers
+│   ├── widgets/          # Reusable custom widgets
+│   └── main.dart         # Application entry point
+├── assets/
+│   └── images/           # Project images and assets
+├── web/                  # Web-specific configuration
+└── pubspec.yaml          # Project dependencies
+```
+
+## Design Philosophy
+
+### Neobrutalism
+
+The portfolio embraces **neobrutalism**, a design trend characterized by:
+
+- **Bold borders**: 2-3px black borders on all interactive elements
+- **Vibrant shadows**: Offset shadows (3-5px) for depth without blur
+- **High contrast**: Strong color combinations for visual impact
+- **Geometric shapes**: Simple, clear shapes with minimal rounding
+- **No gradients**: Flat colors for clarity and boldness
+
+<Tip>
+The neobrutalism style is intentionally bold and playful. It works especially well for creative portfolios where you want to make a strong visual impression.
+</Tip>
+
+### Responsive Design
+
+The portfolio adapts seamlessly across devices:
+
+- **Desktop (&gt;900px)**: Multi-column layouts, side-by-side content, full animations
+- **Tablet (700-900px)**: Adapted layouts with reduced columns
+- **Mobile (&lt;700px)**: Single-column stacked layouts, simplified animations
+
+All components use `LayoutBuilder` and `flutter_screenutil` to provide optimal layouts at any screen size.
+
+## Who is this for?
+
+This portfolio template is ideal for:
+
+- **Software developers** looking to showcase their projects and skills
+- **UI/UX designers** wanting a bold, modern portfolio site
+- **Students** building their first professional portfolio
+- **Freelancers** needing a professional web presence
+- **Anyone** who wants a unique, eye-catching portfolio
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. You're free to use, modify, and distribute this portfolio, but any modifications must also be open-sourced under the same license.
+
+<Warning>
+When using this portfolio, make sure to customize the content with your own information, projects, and branding. Don't deploy it as-is with the original author's information.
+</Warning>
+
+## Next Steps
+
+Ready to get started? Follow our quickstart guide to have your portfolio running in minutes:
+
+<Card
+  title="Quickstart Guide"
+  icon="rocket"
+  href="/quickstart"
+  horizontal
+>
+  Set up and customize your portfolio in 4 easy steps
+</Card>
+
+Or explore specific features:
+
+<CardGroup cols={3}>
+  <Card title="Components" icon="cube" href="/components/overview">
+    Browse the widget library
+  </Card>
+  <Card title="Customization" icon="palette" href="/customization/colors">
+    Make it your own
+  </Card>
+  <Card title="Deployment" icon="upload" href="/deployment/building">
+    Deploy to production
+  </Card>
+</CardGroup>

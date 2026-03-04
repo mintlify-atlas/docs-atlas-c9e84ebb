@@ -1,0 +1,395 @@
+---
+title: "Content Customization"
+description: "Customize portfolio content including projects, skills, social links, and personal information"
+---
+
+## Overview
+
+This guide shows you how to customize the content throughout your portfolio, including projects, personal information, social links, work experience, and skills.
+
+## Personal Information
+
+### Homepage Name
+
+Update your name in `lib/pages/homepage.dart:211-219`:
+
+```dart
+NeoBrutalContainer(
+  text: '   Your Name ↵',
+  path: '/about',
+  width: 100.w,
+  height: 25.w,
+  fontsize: 10.sp,
+  color: isDark ? AppColors.primaryPurple : AppColors.white,
+)
+```
+
+### Tagline/Motto
+
+Customize your motto in the `MottoWid` widget at `lib/pages/homepage.dart:376-416`:
+
+```dart
+Wrap(
+  alignment: WrapAlignment.center,
+  children: [
+    Text('Sometimes', style: mottotextStyle),
+    LanguageBox(text: 'Designing ᵈ', fontsize: fontsize),
+    Text('Sometimes', style: mottotextStyle),
+    LanguageBox(text: 'Coding ᶜ', fontsize: fontsize),
+    Text('Always', style: mottotextStyle),
+    LanguageBox(text: 'Engineering', fontsize: fontsize)
+  ],
+)
+```
+
+### About Me Description
+
+Edit your bio in `lib/pages/about.dart:316`:
+
+```dart
+Text(
+  '''I'm Your Name, a Computer Science graduate from Location. 
+Describe your background, interests, and what you do. 
+Mention your passions and what drives you. 
+Invite people to reach out!''',
+  textAlign: TextAlign.start,
+  style: TextStyle(
+    fontSize: Get.width <= 900 ? 12.sp : 4.sp,
+    fontWeight: FontWeight.normal,
+    fontFamily: GoogleFonts.rubik().fontFamily,
+  ),
+)
+```
+
+## Social Links
+
+### Homepage Social Icons
+
+Customize the floating social icons in `lib/pages/homepage.dart:292-324`:
+
+```dart
+final socialLinks = [
+  {
+    'tooltip': 'Email',
+    'icon': FontAwesomeIcons.envelope,
+    'url': 'mailto:your-email@example.com',
+    'color': AppColors.email
+  },
+  {
+    'tooltip': 'Github',
+    'icon': FontAwesomeIcons.github,
+    'url': 'https://github.com/yourusername',
+    'color': Colors.black
+  },
+  {
+    'tooltip': 'LinkedIn',
+    'icon': FontAwesomeIcons.linkedinIn,
+    'url': 'https://www.linkedin.com/in/yourprofile/',
+    'color': AppColors.linkedin
+  },
+  // Add more social links
+];
+```
+
+### Adding a New Social Platform
+
+1. Add the icon import at the top of `homepage.dart`:
+
+```dart
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:simple_icons/simple_icons.dart';
+```
+
+2. Add to the social links array:
+
+```dart
+{
+  'tooltip': 'YouTube',
+  'icon': FontAwesomeIcons.youtube,
+  'url': 'https://youtube.com/@yourchannel',
+  'color': AppColors.youtube
+},
+```
+
+<Note>
+Colors for social media platforms are predefined in `AppColors`. See [Color Customization](/customization/colors) for the complete list.
+</Note>
+
+### About Page Social Links
+
+Edit professional links in `lib/pages/about.dart:384-407`:
+
+```dart
+children: [
+  SocialLinkButton(
+    link: 'https://yourlink.com',
+    icon: SimpleIcons.notion,
+    pfname: 'Your Link Text',
+    pfcolor: AppColors.black,
+    vmainaxissize: MainAxisSize.min,
+  ),
+  // Add more social link buttons
+],
+```
+
+## Projects
+
+### Adding a New Project
+
+Projects are defined in `lib/pages/projects.dart:48-110`. Add a new `ProjectCard` to the list:
+
+```dart
+final List<ProjectCard> projectCards = const [
+  ProjectCard(
+    projectName: "Your Project Name",
+    projectDescription: "A brief description of what your project does and its key features.",
+    imagePath: "assets/images/your-project.png",
+    projectLogo: "assets/images/your-logo.png", // Optional
+    projectLink: "https://github.com/yourusername/project",
+    languages: ["Flutter", "Dart", "Firebase"],
+    buttonText: "View on GitHub",
+  ),
+  // ... existing projects
+];
+```
+
+### Project Card Properties
+
+<Accordion title="ProjectCard Parameters">
+- **projectName** - Display name of the project
+- **projectDescription** - Short description (max 3 lines displayed)
+- **imagePath** - Path to project screenshot in `assets/images/`
+- **projectLogo** - Optional path to project logo/icon
+- **projectLink** - URL to project (GitHub, live site, etc.)
+- **languages** - Array of technology tags
+- **buttonText** - CTA button text (e.g., "View on GitHub", "Open in Notion")
+</Accordion>
+
+### Technology Tags
+
+The `languages` array creates colored tags. Common examples:
+
+```dart
+languages: [
+  "Flutter",
+  "Dart",
+  "Firebase",
+  "Figma",
+  "REST APIs",
+  "Postman",
+  "Git",
+  "CLI"
+]
+```
+
+### Project Assets
+
+1. Add your project image to `assets/images/`
+2. Update `pubspec.yaml` if needed:
+
+```yaml
+flutter:
+  assets:
+    - assets/images/your-project.png
+    - assets/images/your-logo.png
+```
+
+## Skills
+
+Skills are displayed using the `SkillsBento` widget. Update the skills configuration in the widget file.
+
+<Tip>
+The skills section uses a bento box layout. Each skill can have an icon, name, and proficiency level.
+</Tip>
+
+## Work Experience
+
+Work experience is shown in the `WorkTimeline` widget on the About page (`lib/pages/about.dart:157`).
+
+Edit the timeline in `lib/widgets/worktimeline.dart` to add your work history:
+
+```dart
+// Add timeline entries with:
+// - Company name
+// - Role/Position
+// - Duration
+// - Description/achievements
+```
+
+## Additional Links
+
+### Link Cards
+
+Add custom link cards in the About page at `lib/pages/about.dart:115-123`:
+
+```dart
+LinkCard(
+  vlink: 'https://your-link.com',
+  imageUrl: 'https://path-to-image.jpg',
+  vicon: FontAwesomeIcons.yourIcon,
+  vframecolor: AppColors.creamPeach,
+  vtext: 'Link Title',
+  wide: true
+)
+```
+
+### Social Link Buttons
+
+Add specialized social buttons:
+
+```dart
+SocialLinkButton(
+  link: 'https://sessionize.com/yourprofile/',
+  icon: SimpleIcons.sessionize,
+  pfname: 'speaking engagements',
+  pfcolor: AppColors.sessionize,
+  vmainaxissize: MainAxisSize.min,
+)
+```
+
+## Contact Information
+
+Update contact details in the social links and link cards throughout the application.
+
+### Email Links
+
+For email links with pre-filled subject:
+
+```dart
+'url': 'https://mail.google.com/mail/u/0/?to=your@email.com&fs=1&tf=cm'
+```
+
+For simple mailto links:
+
+```dart
+'url': 'mailto:your@email.com'
+```
+
+## App Metadata
+
+### App Title
+
+Update in `lib/main.dart:29`:
+
+```dart
+title: 'Your Name Portfolio',
+```
+
+### Favicon and Assets
+
+Replace the following files:
+- `web/favicon.png` - Browser tab icon
+- `web/icons/Icon-192.png` - PWA icon (192x192)
+- `web/icons/Icon-512.png` - PWA icon (512x512)
+- `assets/images/favicon.webp` - In-app favicon
+
+## Page-Specific Content
+
+### Homepage Keyboard Shortcuts
+
+Customize keyboard shortcuts in `lib/pages/homepage.dart:49-57`:
+
+```dart
+if (event.logicalKey == LogicalKeyboardKey.keyD) {
+  launchUrlString("https://your-design-portfolio.com");
+} else if (event.logicalKey == LogicalKeyboardKey.keyC) {
+  launchUrlString("https://github.com/yourusername");
+} else if (event.logicalKey == LogicalKeyboardKey.enter) {
+  Get.toNamed('/about');
+}
+```
+
+### Custom Tooltips
+
+Add helpful tooltips to interactive elements:
+
+```dart
+Tooltip(
+  message: "Click me!",
+  decoration: TooltipStyles.decoration(isDark: isDark),
+  textStyle: TooltipStyles.textStyle(isDark: isDark),
+  child: YourWidget(),
+)
+```
+
+## Navigation Routes
+
+Routes are defined in `lib/main.dart:46-51`:
+
+```dart
+routes: {
+  '/home': (_) => const HomePage(),
+  '/projects': (_) => const Projects(),
+  '/about': (_) => const AboutPage(),
+  '/socials': (_) => const Social(),
+},
+```
+
+Add new routes as needed:
+
+```dart
+'/blog': (_) => const BlogPage(),
+```
+
+## Content Best Practices
+
+<Accordion title="Writing Effective Project Descriptions">
+1. **Be concise** - Keep descriptions under 3 lines
+2. **Highlight impact** - What problem does it solve?
+3. **Use action verbs** - Built, designed, implemented
+4. **Include metrics** - "10+ articles", "4 speaking engagements"
+</Accordion>
+
+<Accordion title="Organizing Projects">
+1. **Order by importance** - Put your best work first
+2. **Variety** - Show different skills and technologies
+3. **Recent work** - Keep portfolio up-to-date
+4. **Quality over quantity** - 4-6 strong projects better than 10+ weak ones
+</Accordion>
+
+<Accordion title="Professional Links">
+1. **Keep links active** - Test all URLs regularly
+2. **Use UTM parameters** - Track portfolio traffic
+3. **Professional consistency** - Use same username across platforms
+4. **Privacy** - Only share what you're comfortable with
+</Accordion>
+
+## Dynamic Content
+
+For dynamic content updates without rebuilding:
+
+<Note>
+Consider using Firebase Remote Config or a CMS to manage content dynamically. This allows updating projects, skills, and information without redeploying the app.
+</Note>
+
+## Testing Content Changes
+
+After making content changes:
+
+1. **Hot reload** during development: Press `r` in terminal
+2. **Hot restart** for larger changes: Press `R` in terminal
+3. **Full rebuild** for asset changes:
+
+```bash
+flutter run -d chrome
+```
+
+## Example: Complete Project Entry
+
+Here's a complete example of a well-structured project:
+
+```dart
+ProjectCard(
+  projectName: "E-Commerce Mobile App",
+  projectDescription: "A full-featured shopping app with real-time inventory, payment integration, and order tracking. Supports both iOS and Android with offline mode.",
+  imagePath: "assets/images/ecommerce_app.png",
+  projectLogo: "assets/images/ecommerce_logo.png",
+  projectLink: "https://github.com/username/ecommerce-app",
+  languages: ["Flutter", "Dart", "Firebase", "Stripe API", "REST APIs"],
+  buttonText: "View on GitHub",
+)
+```
+
+<Tip>
+Regularly update your portfolio with new projects and achievements. A stale portfolio suggests you're not actively developing your skills.
+</Tip>

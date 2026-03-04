@@ -1,0 +1,191 @@
+---
+title: Routing
+description: Navigation implementation using GetX and custom page routes
+---
+
+The portfolio uses **GetX** for declarative routing combined with custom page transitions to create a seamless navigation experience.
+
+## Route Configuration
+
+Routes are configured in the main application file using GetX's `GetMaterialApp` widget:
+
+```dart title="lib/main.dart" {27,46-51}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: ScreenUtil.defaultSize,
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, _) {
+        return PopScope(
+          canPop: false,
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Himanshu Balani Portfolio',
+            themeMode: ThemeMode.light,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              useMaterial3: true,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              useMaterial3: true,
+            ),
+            routes: {
+              '/home': (_) => const HomePage(),
+              '/projects': (_) => const Projects(),
+              '/about': (_) => const AboutPage(),
+              '/socials': (_) => const Social(),
+            },
+            home: const HomePage(),
+          ),
+        );
+      },
+    );
+  }
+}
+```
+
+<Note>
+  The `PopScope` widget with `canPop: false` prevents users from accidentally navigating back on web browsers.
+</Note>
+
+## Navigation Methods
+
+The app uses GetX navigation methods throughout the codebase for programmatic routing:
+
+<Tabs>
+  <Tab title="Replace All">
+    Used in the app bar to reset the navigation stack:
+    
+    ```dart title="lib/presentation/desktopappbar.dart:32,59,65"
+    InkWell(
+      onTap: () => Get.offAllNamed('/home'),
+      child: Text('himanshubalani'),
+    )
+    
+    _appBarButton(
+      label: 'home',
+      onPressed: () => Get.offAllNamed('/home'),
+    )
+    
+    _appBarButton(
+      label: 'about',
+      onPressed: () => Get.offAllNamed('/about'),
+    )
+    ```
+    
+    **Use Case:** Navigate to a page and clear the entire navigation stack.
+  </Tab>
+  
+  <Tab title="Push Named">
+    Used for standard forward navigation:
+    
+    ```dart title="lib/presentation/desktopappbar.dart:81,86"
+    _appBarButton(
+      label: 'projects',
+      onPressed: () => Get.toNamed('/projects'),
+    )
+    
+    _appBarButton(
+      label: 'socials',
+      onPressed: () => Get.toNamed('/socials'),
+    )
+    ```
+    
+    **Use Case:** Navigate forward while preserving navigation history.
+  </Tab>
+</Tabs>
+
+## Custom Page Transitions
+
+For specific use cases, the app includes a custom `NoAnimationPageRoute` class to disable page transitions:
+
+```dart title="lib/utils/no_animation_routes.dart"
+class NavigationUtils {
+  static void navigateToPage(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      NoAnimationPageRoute(builder: (context) => page),
+    );
+  }
+}
+
+class NoAnimationPageRoute<T> extends MaterialPageRoute<T> {
+  NoAnimationPageRoute({required super.builder, super.settings});
+
+  @override
+  Duration get transitionDuration => Duration.zero;
+}
+```
+
+<Accordion title="Why disable animations?">
+  Instant navigation creates a snappier feel for certain interactions, particularly in single-page application contexts where users expect immediate feedback. This is especially useful for:
+  
+  - Internal section jumps
+  - Quick context switches
+  - Preserving the neobrutalism aesthetic which favors bold, immediate changes over gradual transitions
+</Accordion>
+
+## Keyboard Navigation
+
+The homepage implements keyboard shortcuts for power users:
+
+```dart title="lib/pages/homepage.dart:46-59"
+KeyboardListener(
+  autofocus: true,
+  focusNode: _focusNode,
+  onKeyEvent: (event) {
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.keyD) {
+        launchUrlString("https://www.figma.com/design/...");
+      } else if (event.logicalKey == LogicalKeyboardKey.keyC) {
+        launchUrlString("https://github.com/himanshubalani");
+      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.numpadEnter) {
+        Get.toNamed('/about');
+      }
+    }
+  },
+  child: Scaffold(...),
+)
+```
+
+### Available Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `D` | Open Figma design portfolio |
+| `C` | Open GitHub profile |
+| `Enter` | Navigate to About page |
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Named Routes" icon="route">
+    Always use named routes with `Get.toNamed()` or `Get.offAllNamed()` for consistency and easier refactoring.
+  </Card>
+  
+  <Card title="Clean Navigation Stack" icon="layer-group">
+    Use `Get.offAllNamed()` when navigating to top-level pages to prevent stack buildup.
+  </Card>
+  
+  <Card title="Keyboard Shortcuts" icon="keyboard">
+    Implement keyboard navigation for frequently accessed routes to improve UX for power users.
+  </Card>
+  
+  <Card title="External Links" icon="arrow-up-right-from-square">
+    Use `url_launcher` for external navigation and keep internal routing with GetX.
+  </Card>
+</CardGroup>
+
+## Related Files
+
+- `lib/main.dart:46-51` - Route definitions
+- `lib/utils/no_animation_routes.dart` - Custom page route implementation
+- `lib/presentation/desktopappbar.dart:48-89` - Desktop navigation buttons
+- `lib/presentation/mobileappbar.dart:103-108` - Mobile navigation menu
+- `lib/pages/homepage.dart:42-60` - Keyboard shortcut implementation

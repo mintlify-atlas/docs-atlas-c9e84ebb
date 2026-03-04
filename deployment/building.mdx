@@ -1,0 +1,244 @@
+---
+title: Building for Production
+description: Learn how to build your Flutter portfolio for web deployment with optimization flags and best practices
+---
+
+## Overview
+
+Building your Flutter portfolio for production involves compiling your Dart code into optimized JavaScript that can be deployed to any web hosting platform. This guide covers the build process, optimization options, and output structure.
+
+## Basic Build Command
+
+The simplest way to build your Flutter web app for production:
+
+```bash
+flutter build web
+```
+
+This command generates optimized web assets in the `build/web` directory, ready for deployment.
+
+## Build with Optimization Flags
+
+<Steps>
+  <Step title="Standard Production Build">
+    Use the release mode for optimized, minified output:
+    
+    ```bash
+    flutter build web --release
+    ```
+    
+    This is the default mode and produces the smallest bundle size.
+  </Step>
+
+  <Step title="Custom Base Path">
+    If deploying to a subdirectory (e.g., GitHub Pages with repo name):
+    
+    ```bash
+    flutter build web --base-href "/repository-name/"
+    ```
+    
+    <Warning>
+      The base href must start and end with a forward slash `/`.
+    </Warning>
+    
+    For this portfolio (himanshubalani.github.io):
+    
+    ```bash
+    flutter build web --base-href "/"
+    ```
+  </Step>
+
+  <Step title="Web Renderer Selection">
+    Choose between CanvasKit and HTML renderers:
+    
+    <CodeGroup>
+    ```bash CanvasKit (Recommended)
+    flutter build web --web-renderer canvaskit
+    ```
+    
+    ```bash HTML Renderer
+    flutter build web --web-renderer html
+    ```
+    
+    ```bash Auto (Default)
+    flutter build web --web-renderer auto
+    ```
+    </CodeGroup>
+    
+    <Tip>
+      **CanvasKit** provides consistent rendering across browsers but has a larger bundle size (~2MB). **HTML** is lighter but may have rendering inconsistencies. **Auto** uses HTML on mobile and CanvasKit on desktop.
+    </Tip>
+  </Step>
+</Steps>
+
+## Advanced Build Options
+
+### Tree Shaking and Optimization
+
+```bash
+flutter build web --release --tree-shake-icons
+```
+
+This removes unused Material and Cupertino icons from your bundle, significantly reducing size.
+
+### Source Maps for Debugging
+
+```bash
+flutter build web --source-maps
+```
+
+<Warning>
+  Only use source maps for debugging. They expose your source code and increase bundle size.
+</Warning>
+
+### Complete Production Build
+
+Combine multiple flags for the optimal production build:
+
+```bash
+flutter build web \
+  --release \
+  --web-renderer auto \
+  --base-href "/" \
+  --tree-shake-icons
+```
+
+## Build Output Structure
+
+After running the build command, the `build/web` directory contains:
+
+```
+build/web/
+├── assets/                    # Asset bundles
+│   ├── fonts/                # Font files
+│   ├── images/               # Image assets
+│   ├── packages/             # Package assets
+│   ├── AssetManifest.json    # Asset registry
+│   ├── FontManifest.json     # Font definitions
+│   └── NOTICES               # License notices
+├── canvaskit/                # CanvasKit WASM files (if used)
+├── icons/                    # PWA icons
+│   ├── Icon-192.png
+│   ├── Icon-512.png
+│   ├── Icon-maskable-192.png
+│   ├── Icon-maskable-512.png
+│   ├── favicon.ico
+│   └── apple-touch-icon.png
+├── index.html                # Main entry point
+├── manifest.json             # PWA manifest
+├── 404.html                  # Custom 404 page
+├── favicon.webp              # Favicon
+├── flutter.js                # Flutter initialization
+├── flutter_bootstrap.js      # Bootstrap script
+├── flutter_service_worker.js # Service worker for PWA
+├── main.dart.js              # Compiled Dart code
+└── version.json              # Version information
+```
+
+## Key Files Explained
+
+### index.html
+
+The main HTML file with:
+- Meta tags for SEO (author, description, keywords)
+- Open Graph tags for social sharing
+- Twitter Card metadata
+- PWA configuration
+- Theme color: `#90A8ED`
+
+From `web/index.html:20-47`:
+```html
+<meta name="description" content="Himanshu Balani's Portfolio Website.">
+<meta name="keywords" content="Portfolio, Flutter Developer, Himanshu Balani">
+<meta property="og:title" content="Himanshu Balani">
+<meta property="og:url" content="https://himanshubalani.com/">
+<meta name="theme-color" content="#90A8ED">
+```
+
+### manifest.json
+
+PWA configuration from `web/manifest.json:1-39`:
+```json
+{
+  "name": "portfolio",
+  "short_name": "portfolio",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0175C2",
+  "description": "Himanshu's Portfolio Website"
+}
+```
+
+### 404.html
+
+Custom 404 page with neobrutalism design matching your portfolio theme (`web/404.html:1-121`).
+
+## Project Configuration
+
+From `pubspec.yaml:1-104`, your portfolio includes:
+
+**Version**: 2.3.0+1  
+**Flutter SDK**: &gt;=3.0.0 &lt;4.0.0
+
+**Key Dependencies**:
+- `google_fonts`: ^6.3.3 - Custom typography
+- `flutter_animate`: ^4.5.0 - Smooth animations
+- `get`: ^4.6.6 - Routing and state management
+- `provider`: ^6.1.2 - State management
+- `url_launcher`: ^6.1.11 - External links
+- `font_awesome_flutter`: ^10.7.0 - Icon library
+- `simple_icons`: ^14.6.1 - Brand icons
+
+**Assets**:
+- Images located in `assets/images/`
+- Material Design icons enabled
+
+## Build Performance Tips
+
+<Tip>
+  **Speed up builds**:
+  - Use `flutter build web --release --dart-define=FLUTTER_WEB_USE_SKIA=false` for faster HTML renderer builds
+  - Enable web compilation cache: `flutter config --enable-web`
+  - Run `flutter pub get` before building to ensure dependencies are cached
+</Tip>
+
+## Troubleshooting
+
+### Build Fails
+
+1. Clean the build cache:
+   ```bash
+   flutter clean
+   flutter pub get
+   flutter build web
+   ```
+
+2. Check Flutter version:
+   ```bash
+   flutter --version
+   flutter doctor -v
+   ```
+
+### Large Bundle Size
+
+1. Enable tree shaking:
+   ```bash
+   flutter build web --tree-shake-icons
+   ```
+
+2. Remove unused dependencies from `pubspec.yaml`
+
+3. Use `--web-renderer html` for smaller builds (trade-off: rendering consistency)
+
+### Asset Loading Issues
+
+Ensure all assets in `pubspec.yaml` exist:
+```yaml
+flutter:
+  assets:
+    - assets/images/
+```
+
+## Next Steps
+
+Once your build is complete, proceed to [Hosting Options](/deployment/hosting) to deploy your portfolio.
