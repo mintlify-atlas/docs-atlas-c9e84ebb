@@ -1,0 +1,79 @@
+{
+  "projectType": "frontend",
+  "projectName": "Portfolio",
+  "projectDescription": "A responsive Flutter web portfolio showcasing projects, skills, and professional experience with neobrutalism design",
+  "theme": "almond",
+  "primaryColor": "#90a8ed",
+  "lightColor": "#B4D6F8",
+  "darkColor": "#261B46",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Core Features",
+        "pages": [
+          "features/routing",
+          "features/responsive-design",
+          "features/theming",
+          "features/animations"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/overview",
+          "components/widgets",
+          "components/neobrutalism",
+          "components/layout"
+        ]
+      },
+      {
+        "group": "Customization",
+        "pages": [
+          "customization/colors",
+          "customization/fonts",
+          "customization/content"
+        ]
+      },
+      {
+        "group": "Deployment",
+        "pages": [
+          "deployment/building",
+          "deployment/hosting"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Responsive design for mobile and desktop",
+    "Neobrutalism UI design style",
+    "Custom reusable widgets library",
+    "Dark and light theme support",
+    "Animated backgrounds and transitions",
+    "Project showcase with technology tags",
+    "Professional timeline and skills display",
+    "Keyboard shortcuts for navigation"
+  ],
+  "publicApiSurface": [
+    "ProjectCard widget",
+    "NeoBrutalContainer widget",
+    "NeoBrutalBox widget",
+    "LanguageBox widget",
+    "AnimatedPillsBackground widget",
+    "ProfileImage widget",
+    "SkillsBento widget",
+    "WorkTimeline widget",
+    "SocialBox widget",
+    "LinkCard widget",
+    "OnHover builder",
+    "AppColors palette",
+    "AppStyles definitions",
+    "TooltipStyles utilities"
+  ]
+}
