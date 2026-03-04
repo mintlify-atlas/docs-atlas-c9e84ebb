@@ -573,6 +573,176 @@ BoxCircles(
 
 ---
 
+## Navigation & UI Widgets
+
+### BottomBar
+
+A footer navigation bar displaying copyright and attribution information.
+
+**Location**: `lib/widgets/bottombar.dart`
+
+**Properties**:
+
+<ParamField path="N/A" type="N/A">
+  This widget has no configurable properties - it displays static attribution text.
+</ParamField>
+
+**Features**:
+- Displays dynamic copyright year
+- Uses Quicksand font
+- Responsive font sizing with clamping
+- Dark background with white text
+- Heart icon for visual appeal
+
+**Usage**:
+
+```dart
+Scaffold(
+  bottomNavigationBar: const BottomBar(),
+  // ...
+)
+```
+
+**Implementation**:
+
+From `bottombar.dart:5-55`:
+```dart
+class BottomBar extends StatelessWidget {
+  const BottomBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var bbfontsize = 10.sp.clamp(5.0, 12.0).toDouble();
+    return BottomAppBar(
+      color: const Color(0xFF101010),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      elevation: 0.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('©', style: TextStyle(fontSize: bbfontsize, color: Colors.white)),
+            Text(DateTime.now().year.toString(), style: TextStyle(fontSize: bbfontsize)),
+            const SizedBox(width: 5),
+            Text('Made with ', style: TextStyle(fontSize: bbfontsize)),
+            const Icon(Icons.favorite, color: Colors.red, size: 12),
+            Text(' and Flutter by Himanshu Balani', style: TextStyle(fontSize: bbfontsize)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+### DarkModeToggle
+
+An animated theme switcher button that toggles between light and dark modes.
+
+**Location**: `lib/widgets/dark_mode_toggle.dart`
+
+**Properties**:
+
+<ParamField path="N/A" type="N/A">
+  This widget reads theme from context and toggles via GetX.
+</ParamField>
+
+**Features**:
+- Scale and rotation animation on toggle
+- Lightbulb icon that changes based on theme
+- Tooltip showing "Dawn" (light) or "Dusk" (dark)
+- Uses theme-aware colors from AppColors
+- 300ms smooth transition
+
+**Usage**:
+
+```dart
+AppBar(
+  actions: [
+    const DarkModeToggle(),
+  ],
+)
+```
+
+**Implementation**:
+
+From `dark_mode_toggle.dart:5-53`:
+```dart
+class DarkModeToggle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return GestureDetector(
+      onTap: () {
+        Get.changeThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
+      },
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: RotationTransition(
+              turns: animation,
+              child: child,
+            ),
+          );
+        },
+        child: Icon(
+          isDark ? Icons.wb_incandescent_outlined : Icons.lightbulb_outline_rounded,
+          key: ValueKey(isDark),
+          size: 28,
+          color: isDark ? AppColors.brightOrange : Colors.black,
+        ),
+      ),
+    );
+  }
+}
+```
+
+### ShortcutsText
+
+A decorative banner displaying available keyboard shortcuts with a custom swallowtail shape.
+
+**Location**: `lib/widgets/shortcuts_text.dart`
+
+**Properties**:
+
+<ParamField path="N/A" type="N/A">
+  This widget displays static shortcut information.
+</ParamField>
+
+**Keyboard Shortcuts Displayed**:
+- **Enter**: Navigate to About Page
+- **D**: Open Figma Design Portfolio
+- **C**: Open GitHub Profile
+
+**Features**:
+- Custom swallowtail shape using CustomPainter
+- Quicksand font for readability
+- Responsive sizing with flutter_screenutil
+- Positioned at bottom-left of homepage
+
+**Usage**:
+
+```dart
+Stack(
+  children: [
+    // Main content
+    Positioned(
+      bottom: 15.h,
+      left: -1,
+      child: const ShortcutsText(),
+    ),
+  ],
+)
+```
+
+**Implementation**:
+
+From `shortcuts_text.dart:5-55`, the widget uses a custom `SwallowTailPainter` to draw a unique banner shape with a white fill and black border.
+
 ## Best Practices
 
 ### Responsive Sizing
